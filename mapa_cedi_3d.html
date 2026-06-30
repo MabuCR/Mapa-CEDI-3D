@@ -75,7 +75,7 @@
 
         <!-- Camera Rig -->
         <a-entity id="cameraRig" position="0 25 40" rotation="-35 0 0">
-            <a-camera id="mainCamera" look-controls="pointerLockEnabled: false" wasd-controls="acceleration: 90; fly: true"></a-camera>
+            <a-camera id="mainCamera" look-controls="pointerLockEnabled: false; magicWindowTrackingEnabled: false" wasd-controls="acceleration: 90; fly: true"></a-camera>
         </a-entity>
         
     </a-scene>
@@ -1493,7 +1493,7 @@
                         // Capture initial intersection point on the floor
                         raycaster.ray.intersectPlane(groundPlane3D, initialIntersection);
                         
-                        document.getElementById("mainCamera").setAttribute("look-controls", "enabled: false");
+                        document.getElementById("mainCamera").setAttribute("look-controls", "pointerLockEnabled: false; magicWindowTrackingEnabled: false; enabled: false");
                         hitSomething = true;
                         e.stopPropagation();
                         e.stopImmediatePropagation();
@@ -1523,7 +1523,7 @@
                         document.getElementById("editZoneSelector").value = id;
                         loadZoneToEditor();
                         
-                        document.getElementById("mainCamera").setAttribute("look-controls", "enabled: false");
+                        document.getElementById("mainCamera").setAttribute("look-controls", "pointerLockEnabled: false; magicWindowTrackingEnabled: false; enabled: false");
                         pushState(); // Save state for undo before moving!
                         dragObject = shapes.find(s => s.id === id);
                         activeHandle = "move"; // drag shape position
@@ -1627,7 +1627,7 @@
             if (dragObject) {
                 dragObject = null;
                 activeHandle = null;
-                document.getElementById("mainCamera").setAttribute("look-controls", "enabled: true");
+                document.getElementById("mainCamera").setAttribute("look-controls", "pointerLockEnabled: false; magicWindowTrackingEnabled: false; enabled: true");
                 saveToLocalStorage();
                 e.stopPropagation();
                 e.stopImmediatePropagation();
