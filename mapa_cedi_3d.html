@@ -1939,12 +1939,12 @@
                 b.classList.remove("bg-[#0053e2]", "text-white");
                 b.classList.add("hover:bg-slate-800", "text-slate-200");
             });
-            const btn = Array.from(document.querySelectorAll("[onclick^='setCameraView']"))
-                .find(b => b.getAttribute("onclick").includes("'" + preset + "'"));
-            if (btn) {
-                btn.classList.remove("hover:bg-slate-800", "text-slate-200");
-                btn.classList.add("bg-[#0053e2]", "text-white");
-            }
+            document.querySelectorAll("[onclick^='setCameraView']").forEach(b => {
+                if (b.getAttribute("onclick").includes("'" + preset + "'")) {
+                    b.classList.remove("hover:bg-slate-800", "text-slate-200");
+                    b.classList.add("bg-[#0053e2]", "text-white");
+                }
+            });
         }
 
         function goBackTo2D() {
