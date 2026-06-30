@@ -89,6 +89,7 @@
             <div class="flex gap-1.5">
                 <button onclick="goBackTo2D()" class="text-xs bg-[#0053e2] hover:bg-[#003ebb] font-bold px-2.5 py-1 rounded border border-blue-500">2D</button>
                 <button onclick="toggleEditor()" class="text-xs bg-amber-500 hover:bg-amber-600 font-bold px-2.5 py-1 rounded border border-amber-400 text-slate-950">Editor</button>
+                <button onclick="toggleMobileMode(true)" class="text-xs bg-[#0053e2] hover:bg-[#003ebb] font-bold px-2.5 py-1 rounded border border-blue-500">Celular</button>
                 <button onclick="undo()" class="text-xs bg-rose-600 hover:bg-rose-700 font-bold px-2.5 py-1 rounded border border-rose-500 text-white flex items-center gap-1" title="Deshacer cambio (Ctrl+Z)">↩ Deshacer</button>
             </div>
         </div>
@@ -110,7 +111,7 @@
     </div>
 
     <!-- PANEL 2: SEARCH & RESULT BOX -->
-    <div id="widgetSearch" class="floating-widget bg-slate-950/90 backdrop-blur-md border border-slate-800 rounded-2xl w-[340px] h-[260px]" style="left: 20px; bottom: 20px;">
+    <div id="widgetSearch" class="floating-widget bg-slate-950/90 backdrop-blur-md border border-slate-800 rounded-2xl w-[340px] h-[260px] hidden" style="left: 20px; bottom: 20px;">
         <div class="drag-handle rounded-t-2xl">
             <span class="text-xs font-bold text-[#ffc220] tracking-wider uppercase">░ Buscador y Resultados</span>
         </div>
@@ -137,6 +138,25 @@
                     <p>Comentarios: <span class="italic text-slate-400" id="res3DComments">-</span></p>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- MOBILE ULTRA-COMPACT PANEL (MODO CELULAR) -->
+    <div id="mobileCompactPanel" class="floating-widget bg-slate-950/90 backdrop-blur-md border border-slate-800 rounded-2xl p-2 hidden" style="position: absolute; left: 20px; top: 20px; width: auto; max-width: calc(100% - 40px); z-index: 100000;">
+        <div class="flex items-center gap-1.5 flex-wrap">
+            <button onclick="setCameraView('iso')" class="bg-[#0053e2] text-white hover:bg-slate-800 font-bold px-3 py-1.5 rounded-xl text-xs transition">Iso</button>
+            <button onclick="setCameraView('front')" class="hover:bg-slate-800 text-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs transition">Frente</button>
+            <button onclick="setCameraView('side')" class="hover:bg-slate-800 text-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs transition">Lado</button>
+            <button onclick="setCameraView('top')" class="hover:bg-slate-800 text-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs transition">Top</button>
+            
+            <div class="h-6 w-[1px] bg-slate-800 mx-1"></div>
+            
+            <button onmousedown="startMove('up')" onmouseup="stopMove()" ontouchstart="startMove('up')" ontouchend="stopMove()" class="bg-slate-800 hover:bg-[#0053e2] text-slate-200 font-bold px-2.5 py-1.5 rounded-xl text-xs">Subir +</button>
+            <button onmousedown="startMove('down')" onmouseup="stopMove()" ontouchstart="startMove('down')" ontouchend="stopMove()" class="bg-slate-800 hover:bg-[#0053e2] text-slate-200 font-bold px-2.5 py-1.5 rounded-xl text-xs">Bajar -</button>
+            
+            <div class="h-6 w-[1px] bg-slate-800 mx-1"></div>
+            
+            <button onclick="toggleMobileMode(false)" class="bg-[#ffc220] hover:bg-amber-500 font-bold px-3 py-1.5 rounded-xl text-xs text-slate-950 transition">Modo PC</button>
         </div>
     </div>
 
@@ -1900,6 +1920,35 @@
         function goBackTo2D() {
             window.location.href = "mapa_cedi_coyol.html";
         }
+
+        function toggleMobileMode(enable) {
+            const header = document.getElementById("widgetHeader");
+            const dpad = document.getElementById("widgetJoystick");
+            const search = document.getElementById("widgetSearch");
+            const mobilePanel = document.getElementById("mobileCompactPanel");
+            
+            if (enable) {
+                if (header) header.classList.add("hidden");
+                if (dpad) dpad.classList.add("hidden");
+                if (search) search.classList.add("hidden");
+                if (mobilePanel) mobilePanel.classList.remove("hidden");
+            } else {
+                if (header) header.classList.remove("hidden");
+                if (dpad) dpad.classList.remove("hidden");
+                if (search) search.classList.add("hidden"); // keep search hidden by default
+                if (mobilePanel) mobilePanel.classList.add("hidden");
+            }
+        }
+
+        // Auto-detect mobile devices on startup
+        window.addEventListener("DOMContentLoaded", () => {
+            const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || (window.innerWidth < 768);
+            if (isMobile) {
+                setTimeout(() => {
+                    toggleMobileMode(true);
+                }, 500);
+            }
+        });
     </script>
 </body>
 </html>
