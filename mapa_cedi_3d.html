@@ -1973,7 +1973,14 @@
                 
                 const rig = document.getElementById("cameraRig");
                 if (rig) {
-                    initialRigY = parseFloat(rig.getAttribute("position").split(" ")[1]) || rig.getAttribute("position").y || 25;
+                    let pos = rig.getAttribute("position");
+                    if (pos && typeof pos === 'object') {
+                        initialRigY = pos.y;
+                    } else if (typeof pos === 'string') {
+                        initialRigY = parseFloat(pos.split(" ")[1]) || 25;
+                    } else {
+                        initialRigY = 25;
+                    }
                 }
             }
         }, { passive: true });
