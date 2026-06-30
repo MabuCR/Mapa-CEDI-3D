@@ -75,7 +75,7 @@
 
         <!-- Camera Rig -->
         <a-entity id="cameraRig" position="0 25 40" rotation="-35 0 0">
-            <a-camera id="mainCamera" look-controls="pointerLockEnabled: false" wasd-controls="acceleration: 90; fly: true"></a-camera>
+            <a-camera id="mainCamera" look-controls="pointerLockEnabled: false; magicWindowTrackingEnabled: false" wasd-controls="acceleration: 90; fly: true"></a-camera>
         </a-entity>
         
     </a-scene>
@@ -89,6 +89,7 @@
             <div class="flex gap-1.5">
                 <button onclick="goBackTo2D()" class="text-xs bg-[#0053e2] hover:bg-[#003ebb] font-bold px-2.5 py-1 rounded border border-blue-500">2D</button>
                 <button onclick="toggleEditor()" class="text-xs bg-amber-500 hover:bg-amber-600 font-bold px-2.5 py-1 rounded border border-amber-400 text-slate-950">Editor</button>
+                <button onclick="toggleMobileMode(true)" class="text-xs bg-[#0053e2] hover:bg-[#003ebb] font-bold px-2.5 py-1 rounded border border-blue-500">Celular</button>
                 <button onclick="undo()" class="text-xs bg-rose-600 hover:bg-rose-700 font-bold px-2.5 py-1 rounded border border-rose-500 text-white flex items-center gap-1" title="Deshacer cambio (Ctrl+Z)">↩ Deshacer</button>
             </div>
         </div>
@@ -102,7 +103,6 @@
                 <div class="flex gap-1 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
                     <button onclick="setCameraView('top')" class="hover:bg-slate-800 text-slate-200 flex-1 py-1 rounded text-[9px] font-bold transition">Aerea (Arriba)</button>
                     <button onclick="setCameraView('front')" class="hover:bg-slate-800 text-slate-200 flex-1 py-1 rounded text-[9px] font-bold transition">Frente</button>
-                    <button onclick="setCameraView('side')" class="hover:bg-slate-800 text-slate-200 flex-1 py-1 rounded text-[9px] font-bold transition">Costado</button>
                     <button onclick="setCameraView('iso')" class="bg-[#0053e2] text-white flex-1 py-1 rounded text-[9px] font-bold transition shadow">Inclinada (3D)</button>
                 </div>
             </div>
@@ -110,7 +110,7 @@
     </div>
 
     <!-- PANEL 2: SEARCH & RESULT BOX -->
-    <div id="widgetSearch" class="floating-widget bg-slate-950/90 backdrop-blur-md border border-slate-800 rounded-2xl w-[340px] h-[260px]" style="left: 20px; bottom: 20px;">
+    <div id="widgetSearch" class="floating-widget bg-slate-950/90 backdrop-blur-md border border-slate-800 rounded-2xl w-[340px] h-[260px] hidden" style="left: 20px; bottom: 20px;">
         <div class="drag-handle rounded-t-2xl">
             <span class="text-xs font-bold text-[#ffc220] tracking-wider uppercase">░ Buscador y Resultados</span>
         </div>
@@ -137,6 +137,24 @@
                     <p>Comentarios: <span class="italic text-slate-400" id="res3DComments">-</span></p>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- MOBILE ULTRA-COMPACT PANEL (MODO CELULAR) -->
+    <div id="mobileCompactPanel" class="floating-widget bg-slate-950/90 backdrop-blur-md border border-slate-800 rounded-2xl p-2 hidden" style="position: absolute; left: 20px; top: 20px; width: auto; max-width: calc(100% - 40px); z-index: 100000;">
+        <div class="flex items-center gap-1.5 flex-wrap">
+            <button onclick="setCameraView('iso')" class="bg-[#0053e2] text-white hover:bg-slate-800 font-bold px-3 py-1.5 rounded-xl text-xs transition">Iso</button>
+            <button onclick="setCameraView('front')" class="hover:bg-slate-800 text-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs transition">Frente</button>
+            <button onclick="setCameraView('top')" class="hover:bg-slate-800 text-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs transition">Top</button>
+            
+            <div class="h-6 w-[1px] bg-slate-800 mx-1"></div>
+            
+            <button onmousedown="startMove('up')" onmouseup="stopMove()" ontouchstart="startMove('up')" ontouchend="stopMove()" class="bg-slate-800 hover:bg-[#0053e2] text-slate-200 font-bold px-2.5 py-1.5 rounded-xl text-xs">Subir +</button>
+            <button onmousedown="startMove('down')" onmouseup="stopMove()" ontouchstart="startMove('down')" ontouchend="stopMove()" class="bg-slate-800 hover:bg-[#0053e2] text-slate-200 font-bold px-2.5 py-1.5 rounded-xl text-xs">Bajar -</button>
+            
+            <div class="h-6 w-[1px] bg-slate-800 mx-1"></div>
+            
+            <button onclick="toggleMobileMode(false)" class="bg-[#ffc220] hover:bg-amber-500 font-bold px-3 py-1.5 rounded-xl text-xs text-slate-950 transition">Modo PC</button>
         </div>
     </div>
 
@@ -447,6 +465,11 @@
                         onmousedown="startMove('down')" onmouseup="stopMove()" ontouchstart="startMove('down')" ontouchend="stopMove()">Bajar -</button>
             </div>
         </div>
+    </div>
+
+    <!-- VIRTUAL JOYSTICK FOR MOBILE NAVIGATION IN FRONT VIEW -->
+    <div id="virtualJoystickContainer" class="floating-widget hidden" style="position: absolute; bottom: 30px; left: 30px; width: 100px; height: 100px; background: rgba(15, 23, 42, 0.6); border: 2px solid rgba(255, 194, 32, 0.4); border-radius: 50%; touch-action: none; z-index: 99999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div id="virtualJoystickKnob" style="width: 40px; height: 40px; background: #ffc220; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: transform 0.05s ease; touch-action: none;"></div>
     </div>
 
     <!-- PANEL 5: ZONE DETAILS & LIST -->
@@ -1385,6 +1408,137 @@
             }
         }
 
+        // VIRTUAL JOYSTICK LOGIC FOR SMOOTH 360 DEGREE MOBILE NAVIGATION
+        let joystickActive = false;
+        let joystickTouchId = null;
+        let joystickStartX = 0;
+        let joystickStartY = 0;
+        let joystickDX = 0;
+        let joystickDY = 0;
+        let joystickLoopTimer = null;
+
+        window.addEventListener("DOMContentLoaded", () => {
+            const joystickContainer = document.getElementById("virtualJoystickContainer");
+            const joystickKnob = document.getElementById("virtualJoystickKnob");
+            if (!joystickContainer || !joystickKnob) return;
+
+            joystickContainer.addEventListener("touchstart", (e) => {
+                const touch = e.changedTouches[0];
+                joystickTouchId = touch.identifier;
+                joystickActive = true;
+                
+                const rect = joystickContainer.getBoundingClientRect();
+                joystickStartX = rect.left + rect.width / 2;
+                joystickStartY = rect.top + rect.height / 2;
+                
+                updateJoystickPosition(touch.clientX, touch.clientY);
+                startJoystickLoop();
+                
+                e.preventDefault();
+                e.stopPropagation();
+            }, { passive: false });
+
+            window.addEventListener("touchmove", (e) => {
+                if (!joystickActive) return;
+                
+                let joystickTouch = null;
+                for (let i = 0; i < e.touches.length; i++) {
+                    if (e.touches[i].identifier === joystickTouchId) {
+                        joystickTouch = e.touches[i];
+                        break;
+                    }
+                }
+                
+                if (joystickTouch) {
+                    updateJoystickPosition(joystickTouch.clientX, joystickTouch.clientY);
+                }
+            }, { passive: true });
+
+            window.addEventListener("touchend", (e) => {
+                if (!joystickActive) return;
+                
+                let joystickEnded = false;
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    if (e.changedTouches[i].identifier === joystickTouchId) {
+                        joystickEnded = true;
+                        break;
+                    }
+                }
+                
+                if (joystickEnded) {
+                    joystickActive = false;
+                    joystickTouchId = null;
+                    joystickDX = 0;
+                    joystickDY = 0;
+                    joystickKnob.style.transform = "translate(0px, 0px)";
+                    stopJoystickLoop();
+                }
+            }, { passive: true });
+
+            function updateJoystickPosition(clientX, clientY) {
+                let dx = clientX - joystickStartX;
+                let dy = clientY - joystickStartY;
+                const maxRadius = 40;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance > maxRadius) {
+                    dx = (dx / distance) * maxRadius;
+                    dy = (dy / distance) * maxRadius;
+                }
+                
+                joystickKnob.style.transform = `translate(${dx}px, ${dy}px)`;
+                
+                joystickDX = dx / maxRadius;
+                joystickDY = dy / maxRadius;
+            }
+        });
+
+        function startJoystickLoop() {
+            if (joystickLoopTimer) return;
+            const moveSpeedScalar = 0.8;
+            const rig = document.getElementById("cameraRig");
+            const camera = document.getElementById("mainCamera");
+            
+            joystickLoopTimer = setInterval(() => {
+                if (!joystickActive || !rig || !camera) return;
+                
+                let pos = rig.getAttribute("position");
+                
+                const dir = new THREE.Vector3();
+                camera.object3D.getWorldDirection(dir);
+                
+                const fwd = new THREE.Vector3(-dir.x, 0, -dir.z).normalize();
+                const right = new THREE.Vector3(-fwd.z, 0, fwd.x);
+                
+                const forwardMoveX = fwd.x * (-joystickDY) * moveSpeedScalar;
+                const forwardMoveZ = fwd.z * (-joystickDY) * moveSpeedScalar;
+                
+                const rightMoveX = right.x * joystickDX * moveSpeedScalar;
+                const rightMoveZ = right.z * joystickDX * moveSpeedScalar;
+                
+                const deltaX = forwardMoveX + rightMoveX;
+                const deltaZ = forwardMoveZ + rightMoveZ;
+                
+                if (typeof pos === 'string') {
+                    let parts = pos.split(" ").map(parseFloat);
+                    parts[0] += deltaX;
+                    parts[2] += deltaZ;
+                    rig.setAttribute("position", parts.join(" "));
+                } else if (pos && typeof pos === 'object') {
+                    pos.x += deltaX;
+                    pos.z += deltaZ;
+                    rig.setAttribute("position", `${pos.x} ${pos.y} ${pos.z}`);
+                }
+            }, 20);
+        }
+
+        function stopJoystickLoop() {
+            if (joystickLoopTimer) {
+                clearInterval(joystickLoopTimer);
+                joystickLoopTimer = null;
+            }
+        }
+
         let isDraggingMouse = false;
         let lastMouseX = 0;
         let lastMouseY = 0;
@@ -1493,7 +1647,7 @@
                         // Capture initial intersection point on the floor
                         raycaster.ray.intersectPlane(groundPlane3D, initialIntersection);
                         
-                        document.getElementById("mainCamera").setAttribute("look-controls", "enabled: false");
+                        document.getElementById("mainCamera").setAttribute("look-controls", "pointerLockEnabled: false; magicWindowTrackingEnabled: false; enabled: false");
                         hitSomething = true;
                         e.stopPropagation();
                         e.stopImmediatePropagation();
@@ -1627,7 +1781,7 @@
             if (dragObject) {
                 dragObject = null;
                 activeHandle = null;
-                document.getElementById("mainCamera").setAttribute("look-controls", "enabled: true");
+                document.getElementById("mainCamera").setAttribute("look-controls", "pointerLockEnabled: false; magicWindowTrackingEnabled: false; enabled: true");
                 saveToLocalStorage();
                 e.stopPropagation();
                 e.stopImmediatePropagation();
@@ -1759,6 +1913,31 @@
             rig.setAttribute("position", rigPos.x + " " + rigPos.y + " " + rigPos.z);
             rig.setAttribute("rotation", rigRot.x + " " + rigRot.y + " " + rigRot.z);
             
+            // Toggle virtual joystick visibility based on preset (only front view)
+            const joystickCont = document.getElementById("virtualJoystickContainer");
+            if (joystickCont) {
+                if (preset === 'front') {
+                    joystickCont.classList.remove("hidden");
+                } else {
+                    joystickCont.classList.add("hidden");
+                    if (typeof joystickActive !== 'undefined' && joystickActive) {
+                        joystickActive = false;
+                        joystickDX = 0;
+                        joystickDY = 0;
+                        const knob = document.getElementById("virtualJoystickKnob");
+                        if (knob) knob.style.transform = "translate(0px, 0px)";
+                        stopJoystickLoop();
+                    }
+                }
+            }
+
+            // Disable single-finger rotating in top view to keep the view flat and locked
+            if (preset === 'top') {
+                cam.setAttribute("look-controls", "pointerLockEnabled: false; magicWindowTrackingEnabled: false; enabled: false");
+            } else {
+                cam.setAttribute("look-controls", "pointerLockEnabled: false; magicWindowTrackingEnabled: false; enabled: true");
+            }
+
             // Reset look-controls pitch & yaw internally
             if (cam.components && cam.components['look-controls']) {
                 cam.components['look-controls'].yawObject.rotation.set(0, 0, 0);
@@ -1770,17 +1949,102 @@
                 b.classList.remove("bg-[#0053e2]", "text-white");
                 b.classList.add("hover:bg-slate-800", "text-slate-200");
             });
-            const btn = Array.from(document.querySelectorAll("[onclick^='setCameraView']"))
-                .find(b => b.getAttribute("onclick").includes("'" + preset + "'"));
-            if (btn) {
-                btn.classList.remove("hover:bg-slate-800", "text-slate-200");
-                btn.classList.add("bg-[#0053e2]", "text-white");
-            }
+            // Update button styles
+            document.querySelectorAll("[onclick^='setCameraView']").forEach(b => {
+                b.classList.remove("bg-[#0053e2]", "text-white");
+                b.classList.add("hover:bg-slate-800", "text-slate-200");
+            });
+            document.querySelectorAll("[onclick^='setCameraView']").forEach(b => {
+                if (b.getAttribute("onclick").includes("'" + preset + "'")) {
+                    b.classList.remove("hover:bg-slate-800", "text-slate-200");
+                    b.classList.add("bg-[#0053e2]", "text-white");
+                }
+            });
         }
 
         function goBackTo2D() {
             window.location.href = "mapa_cedi_coyol.html";
         }
+
+        function toggleMobileMode(enable) {
+            const header = document.getElementById("widgetHeader");
+            const dpad = document.getElementById("widgetJoystick");
+            const search = document.getElementById("widgetSearch");
+            const mobilePanel = document.getElementById("mobileCompactPanel");
+            
+            if (enable) {
+                if (header) header.classList.add("hidden");
+                if (dpad) dpad.classList.add("hidden");
+                if (search) search.classList.add("hidden");
+                if (mobilePanel) mobilePanel.classList.remove("hidden");
+            } else {
+                if (header) header.classList.remove("hidden");
+                if (dpad) dpad.classList.remove("hidden");
+                if (search) search.classList.add("hidden"); // keep search hidden by default
+                if (mobilePanel) mobilePanel.classList.add("hidden");
+            }
+        }
+
+        // Auto-detect mobile devices on startup
+        window.addEventListener("DOMContentLoaded", () => {
+            const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || (window.innerWidth < 768);
+            if (isMobile) {
+                setTimeout(() => {
+                    toggleMobileMode(true);
+                    setCameraView('top'); // Default view for first-time mobile entry!
+                }, 500);
+            }
+        });
+
+        // PINCH-TO-ZOOM FOR MOBILE DEVICES
+        let initialPinchDistance = 0;
+        let initialRigY = 25;
+        let isPinching = false;
+
+        window.addEventListener("touchstart", (e) => {
+            if (e.touches.length === 2) {
+                isPinching = true;
+                const t1 = e.touches[0];
+                const t2 = e.touches[1];
+                const dx = t1.clientX - t2.clientX;
+                const dy = t1.clientY - t2.clientY;
+                initialPinchDistance = Math.sqrt(dx * dx + dy * dy);
+                
+                const rig = document.getElementById("cameraRig");
+                if (rig && rig.object3D) {
+                    initialRigY = rig.object3D.position.y;
+                }
+            }
+        }, { passive: true });
+
+        window.addEventListener("touchmove", (e) => {
+            if (isPinching && e.touches.length === 2) {
+                const t1 = e.touches[0];
+                const t2 = e.touches[1];
+                const dx = t1.clientX - t2.clientX;
+                const dy = t1.clientY - t2.clientY;
+                const currentDistance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (initialPinchDistance > 0) {
+                    const ratio = currentDistance / initialPinchDistance;
+                    const rig = document.getElementById("cameraRig");
+                    if (rig && rig.object3D) {
+                        let newY = initialRigY / ratio;
+                        newY = Math.max(3, Math.min(95, newY));
+                        
+                        rig.object3D.position.y = newY;
+                        rig.setAttribute("position", `${rig.object3D.position.x} ${newY} ${rig.object3D.position.z}`);
+                    }
+                }
+            }
+        }, { passive: true });
+
+        window.addEventListener("touchend", (e) => {
+            if (e.touches.length < 2) {
+                isPinching = false;
+                initialPinchDistance = 0;
+            }
+        }, { passive: true });
     </script>
 </body>
 </html>
