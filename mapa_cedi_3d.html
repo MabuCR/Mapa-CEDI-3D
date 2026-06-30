@@ -1412,6 +1412,7 @@
 
         // VIRTUAL JOYSTICK LOGIC FOR SMOOTH 360 DEGREE MOBILE NAVIGATION
         let joystickActive = false;
+        let joystickTouchId = null;
         let joystickStartX = 0;
         let joystickStartY = 0;
         let joystickDX = 0;
@@ -1424,36 +1425,58 @@
             if (!joystickContainer || !joystickKnob) return;
 
             joystickContainer.addEventListener("touchstart", (e) => {
+                const touch = e.changedTouches[0];
+                joystickTouchId = touch.identifier;
                 joystickActive = true;
-                const touch = e.touches[0];
+                
                 const rect = joystickContainer.getBoundingClientRect();
                 joystickStartX = rect.left + rect.width / 2;
                 joystickStartY = rect.top + rect.height / 2;
                 
                 updateJoystickPosition(touch.clientX, touch.clientY);
                 startJoystickLoop();
+                
                 e.preventDefault();
                 e.stopPropagation();
             }, { passive: false });
 
             window.addEventListener("touchmove", (e) => {
                 if (!joystickActive) return;
-                const touch = e.touches[0];
-                updateJoystickPosition(touch.clientX, touch.clientY);
-                e.preventDefault();
-                e.stopPropagation();
-            }, { passive: false });
+                
+                let joystickTouch = null;
+                for (let i = 0; i < e.touches.length; i++) {
+                    if (e.touches[i].identifier === joystickTouchId) {
+                        joystickTouch = e.touches[i];
+                        break;
+                    }
+                }
+                
+                if (joystickTouch) {
+                    updateJoystickPosition(joystickTouch.clientX, joystickTouch.clientY);
+                    // Do NOT preventDefault or stopPropagation globally, so A-Frame can handle look-controls!
+                }
+            }, { passive: true });
 
             window.addEventListener("touchend", (e) => {
                 if (!joystickActive) return;
-                joystickActive = false;
-                joystickDX = 0;
-                joystickDY = 0;
-                joystickKnob.style.transform = "translate(0px, 0px)";
-                stopJoystickLoop();
-                e.preventDefault();
-                e.stopPropagation();
-            }, { passive: false });
+                
+                let joystickEnded = false;
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    if (e.changedTouches[i].identifier === joystickTouchId) {
+                        joystickEnded = true;
+                        break;
+                    }
+                }
+                
+                if (joystickEnded) {
+                    joystickActive = false;
+                    joystickTouchId = null;
+                    joystickDX = 0;
+                    joystickDY = 0;
+                    joystickKnob.style.transform = "translate(0px, 0px)";
+                    stopJoystickLoop();
+                }
+            }, { passive: true });
 
             function updateJoystickPosition(clientX, clientY) {
                 let dx = clientX - joystickStartX;
