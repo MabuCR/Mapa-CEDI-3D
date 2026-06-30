@@ -75,7 +75,7 @@
 
         <!-- Camera Rig -->
         <a-entity id="cameraRig" position="0 25 40" rotation="-35 0 0">
-            <a-camera id="mainCamera" look-controls="pointerLockEnabled: false; magicWindowTrackingEnabled: false" wasd-controls="acceleration: 90; fly: true"></a-camera>
+            <a-camera id="mainCamera" look-controls="pointerLockEnabled: false" wasd-controls="acceleration: 90; fly: true"></a-camera>
         </a-entity>
         
     </a-scene>
@@ -89,7 +89,6 @@
             <div class="flex gap-1.5">
                 <button onclick="goBackTo2D()" class="text-xs bg-[#0053e2] hover:bg-[#003ebb] font-bold px-2.5 py-1 rounded border border-blue-500">2D</button>
                 <button onclick="toggleEditor()" class="text-xs bg-amber-500 hover:bg-amber-600 font-bold px-2.5 py-1 rounded border border-amber-400 text-slate-950">Editor</button>
-                <button onclick="toggleMobileMode(true)" class="text-xs bg-[#0053e2] hover:bg-[#003ebb] font-bold px-2.5 py-1 rounded border border-blue-500">Celular</button>
                 <button onclick="undo()" class="text-xs bg-rose-600 hover:bg-rose-700 font-bold px-2.5 py-1 rounded border border-rose-500 text-white flex items-center gap-1" title="Deshacer cambio (Ctrl+Z)">↩ Deshacer</button>
             </div>
         </div>
@@ -103,6 +102,7 @@
                 <div class="flex gap-1 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
                     <button onclick="setCameraView('top')" class="hover:bg-slate-800 text-slate-200 flex-1 py-1 rounded text-[9px] font-bold transition">Aerea (Arriba)</button>
                     <button onclick="setCameraView('front')" class="hover:bg-slate-800 text-slate-200 flex-1 py-1 rounded text-[9px] font-bold transition">Frente</button>
+                    <button onclick="setCameraView('side')" class="hover:bg-slate-800 text-slate-200 flex-1 py-1 rounded text-[9px] font-bold transition">Costado</button>
                     <button onclick="setCameraView('iso')" class="bg-[#0053e2] text-white flex-1 py-1 rounded text-[9px] font-bold transition shadow">Inclinada (3D)</button>
                 </div>
             </div>
@@ -110,7 +110,7 @@
     </div>
 
     <!-- PANEL 2: SEARCH & RESULT BOX -->
-    <div id="widgetSearch" class="floating-widget bg-slate-950/90 backdrop-blur-md border border-slate-800 rounded-2xl w-[340px] h-[260px] hidden" style="left: 20px; bottom: 20px;">
+    <div id="widgetSearch" class="floating-widget bg-slate-950/90 backdrop-blur-md border border-slate-800 rounded-2xl w-[340px] h-[260px]" style="left: 20px; bottom: 20px;">
         <div class="drag-handle rounded-t-2xl">
             <span class="text-xs font-bold text-[#ffc220] tracking-wider uppercase">░ Buscador y Resultados</span>
         </div>
@@ -137,24 +137,6 @@
                     <p>Comentarios: <span class="italic text-slate-400" id="res3DComments">-</span></p>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- MOBILE ULTRA-COMPACT PANEL (MODO CELULAR) -->
-    <div id="mobileCompactPanel" class="floating-widget bg-slate-950/90 backdrop-blur-md border border-slate-800 rounded-2xl p-2 hidden" style="position: absolute; left: 20px; top: 20px; width: auto; max-width: calc(100% - 40px); z-index: 100000;">
-        <div class="flex items-center gap-1.5 flex-wrap">
-            <button onclick="setCameraView('iso')" class="bg-[#0053e2] text-white hover:bg-slate-800 font-bold px-3 py-1.5 rounded-xl text-xs transition">Iso</button>
-            <button onclick="setCameraView('front')" class="hover:bg-slate-800 text-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs transition">Frente</button>
-            <button onclick="setCameraView('top')" class="hover:bg-slate-800 text-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs transition">Top</button>
-            
-            <div class="h-6 w-[1px] bg-slate-800 mx-1"></div>
-            
-            <button onmousedown="startMove('up')" onmouseup="stopMove()" ontouchstart="startMove('up')" ontouchend="stopMove()" class="bg-slate-800 hover:bg-[#0053e2] text-slate-200 font-bold px-2.5 py-1.5 rounded-xl text-xs">Subir +</button>
-            <button onmousedown="startMove('down')" onmouseup="stopMove()" ontouchstart="startMove('down')" ontouchend="stopMove()" class="bg-slate-800 hover:bg-[#0053e2] text-slate-200 font-bold px-2.5 py-1.5 rounded-xl text-xs">Bajar -</button>
-            
-            <div class="h-6 w-[1px] bg-slate-800 mx-1"></div>
-            
-            <button onclick="toggleMobileMode(false)" class="bg-[#ffc220] hover:bg-amber-500 font-bold px-3 py-1.5 rounded-xl text-xs text-slate-950 transition">Modo PC</button>
         </div>
     </div>
 
@@ -467,11 +449,6 @@
         </div>
     </div>
 
-    <!-- VIRTUAL JOYSTICK FOR MOBILE NAVIGATION IN FRONT VIEW -->
-    <div id="virtualJoystickContainer" class="floating-widget hidden" style="position: absolute; bottom: 30px; left: 30px; width: 100px; height: 100px; background: rgba(15, 23, 42, 0.6); border: 2px solid rgba(255, 194, 32, 0.4); border-radius: 50%; touch-action: none; z-index: 99999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
-        <div id="virtualJoystickKnob" style="width: 40px; height: 40px; background: #ffc220; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: transform 0.05s ease; touch-action: none;"></div>
-    </div>
-
     <!-- PANEL 5: ZONE DETAILS & LIST -->
     <div id="zone3DListCard" class="floating-widget bg-slate-950/95 backdrop-blur-md border border-slate-800 w-[320px] h-[220px] hidden" style="left: 380px; bottom: 20px;">
         <div class="drag-handle rounded-t-2xl">
@@ -517,7 +494,7 @@
         
         // Auto-Save load logic from LocalStorage
         const storageKey = "cedi_3d_shapes_v1";
-        const defaultShapes = [{"id": "ENTRADA_27", "label": "SALIDA 27", "type": "BOX", "x": 52.13, "y": 0.75, "z": 35.51, "w": 7.53, "d": 1.5, "h": 1.5, "ry": 11.5, "arc": 90, "color": "#808080", "opacity": 1, "text_offset_z": -0.3, "text_size": 15}, {"id": "ENTRADA", "label": "Entrada", "type": "BOX", "x": 10.53, "y": 0.75, "z": -43.36, "w": 9.66, "d": 2.56, "h": 1.5, "ry": 0, "arc": 90, "color": "#000000", "opacity": 1}, {"id": "LUBRICEDI", "label": "Lubricedi", "type": "BOX", "x": 0.9, "y": 1.25, "z": -28.84, "w": 4.5, "d": 3.49, "h": 2.5, "ry": 0, "arc": 90, "color": "rgba(14, 165, 233, 0.45)", "opacity": 1}, {"id": "DEVOLUCIONES", "label": "Devoluciones", "type": "BOX", "x": -9.47, "y": 1.25, "z": -37.93, "w": 12.58, "d": 7.06, "h": 2.5, "ry": 0, "arc": 90, "color": "rgba(249, 115, 22, 0.45)", "opacity": 1}, {"id": "CEDI_1", "label": "CEDI", "type": "BOX", "x": 1.14, "y": 2.1, "z": -15.24, "w": 8.39, "d": 11.69, "h": 4.2, "ry": 0, "arc": 90, "color": "#919191", "opacity": 1}, {"id": "CEDI_2", "label": "CEDI", "type": "BOX", "x": 9.49, "y": 2, "z": 14.36, "w": 29.05, "d": 47.5, "h": 4, "ry": 0, "arc": 90, "color": "#919191", "text_size": 61.5, "opacity": 1}, {"id": "PDC", "label": "PDC", "type": "BOX", "x": -52.84, "y": 1.5, "z": 19.35, "w": 15.89, "d": 16.27, "h": 3, "ry": 0, "arc": 90, "color": "#5e5e5e", "opacity": 1}, {"id": "OFICINA_TRANSPORTE", "label": "CEDI EXPANSION", "type": "BOX", "x": -24.93, "y": 2, "z": 24.68, "w": 39.83, "d": 26.86, "h": 4, "ry": 0, "arc": 90, "color": "#919191", "text_size": 23, "opacity": 1}, {"id": "ZONE_K", "label": "K", "type": "BOX", "x": -8.19, "y": 0.5, "z": 44.4, "w": 12.07, "d": 7.53, "h": 1, "ry": 0, "arc": 90, "color": "rgba(14, 165, 233, 0.45)"}, {"id": "ZONE_D2", "label": "D", "type": "BOX", "x": 18.02, "y": 0.5, "z": 41.8, "w": 11.78, "d": 3.36, "h": 1, "ry": 0, "arc": 90, "color": "rgba(14, 165, 233, 0.45)"}, {"id": "ZONE_B", "label": "B", "type": "BOX", "x": 29.99, "y": 0.5, "z": 15.3, "w": 4.15, "d": 18.51, "h": 1, "ry": 0, "arc": 90, "color": "rgba(14, 165, 233, 0.45)"}, {"id": "ZONE_P", "label": "P", "type": "BOX", "x": 30, "y": 0.5, "z": -0.31, "w": 4.08, "d": 12.46, "h": 1, "ry": 0, "arc": 90, "color": "rgba(14, 165, 233, 0.45)"}, {"id": "ZONE_G1", "label": "G.1", "type": "BOX", "x": -19.76, "y": 0.4, "z": 6.58, "w": 19.12, "d": 2.72, "h": 0.8, "ry": 0, "arc": 90, "color": "rgba(99, 102, 241, 0.45)"}, {"id": "ZONE_G2", "label": "G.2", "type": "BOX", "x": -45.44, "y": 0.4, "z": 6.55, "w": 32.15, "d": 2.72, "h": 0.8, "ry": 0, "arc": 90, "color": "rgba(99, 102, 241, 0.45)"}, {"id": "ZONE_C1", "label": "C.1", "type": "BOX", "x": -19.77, "y": 0.4, "z": 3.72, "w": 19.12, "d": 2.92, "h": 0.8, "ry": 0, "arc": 90, "color": "rgba(236, 72, 153, 0.45)"}, {"id": "ZONE_C2", "label": "C.2", "type": "BOX", "x": -45.43, "y": 0.4, "z": 3.75, "w": 32.1, "d": 2.92, "h": 0.8, "ry": 0, "arc": 90, "color": "rgba(236, 72, 153, 0.45)"}, {"id": "STREET_CALLE", "label": "CALLE", "type": "BOX", "x": -0.34, "y": 0.05, "z": -24.7, "w": 18.72, "d": 1.43, "h": 0.1, "ry": 0, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "STREET_CALLE1", "label": "CALLE1", "type": "BOX", "x": 9.67, "y": 0.05, "z": -31.54, "w": 1.35, "d": 21.29, "h": 0.1, "ry": 0, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "CURVE_CALLE1_1", "label": "CALLE1-1", "type": "CURVE", "x": 14.82, "y": 0.15, "z": -21.13, "w": 5.1, "d": 0.35, "h": 0.3, "ry": 182, "arc": 88.5, "color": "#4a4a4a", "opacity": 1}, {"id": "STREET_CALLE1_2", "label": "CALLE1-2", "type": "STREET", "x": 18.06, "y": 0.02, "z": -15.99, "w": 6.65, "d": 1.25, "h": 0.1, "ry": 0, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "CURVE_CALLE1_3", "label": "CALLE1-3", "type": "CURVE", "x": 21.28, "y": 0.02, "z": -11.1, "w": 4.9, "d": 0.35, "h": 0.1, "ry": 0, "arc": 88.5, "color": "#4a4a4a", "opacity": 1}, {"id": "STREET_CALLE1_4", "label": "CALLE1-4", "type": "STREET", "x": 26.19, "y": 0.02, "z": 12.05, "w": 46.45, "d": 1.5, "h": 0.1, "ry": 90, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "CURVE_CALLE1_5", "label": "CALLE1-5", "type": "CURVE", "x": 22.32, "y": 0.02, "z": 35.35, "w": 3.85, "d": 0.35, "h": 0.1, "ry": 268, "arc": 93.5, "color": "#4a4a4a", "opacity": 1}, {"id": "STREET_CALLE1_6", "label": "CALLE1-6", "type": "STREET", "x": 3.99, "y": 0.02, "z": 39.22, "w": 36.4, "d": 1.3, "h": 0.1, "ry": 0, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "STREET_CALLE1_7", "label": "CALLE1-7", "type": "STREET", "x": 35.96, "y": 0.02, "z": 28.28, "w": 18.05, "d": 2.9, "h": 0.1, "ry": 0, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "CURVE_CALLE1_8", "label": "CALLE1-8", "type": "CURVE", "x": 44.93, "y": 0.02, "z": 35.66, "w": 7.4, "d": 0.7, "h": 0.1, "ry": 7.5, "arc": 83.5, "color": "#4a4a4a", "opacity": 1}, {"id": "ZONE_PATIO_1", "label": "PATIO 1", "type": "ZONE", "x": 50.74, "y": 0.5, "z": 20.93, "w": 22.82, "d": 8.36, "h": 1, "ry": 0, "arc": 90, "color": "rgba(251, 191, 36, 0.55)"}, {"id": "STREET_CALLE1_9", "label": "CALLE1-9", "type": "STREET", "x": 52.95, "y": 0.02, "z": 27.31, "w": 6, "d": 1.95, "h": 0.1, "ry": 48, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "ZONE_PATIO_2", "label": "PATIO 2", "type": "ZONE", "x": 41.75, "y": 0.5, "z": 39.91, "w": 10.61, "d": 7.64, "h": 1, "ry": 9, "arc": 90, "color": "rgba(251, 191, 36, 0.55)"}, {"id": "ZONE_PATIO_3", "label": "PATIO 3", "type": "ZONE", "x": -27.88, "y": 0.5, "z": 52.27, "w": 14.44, "d": 8.99, "h": 1, "ry": 0, "arc": 90, "color": "rgba(251, 191, 36, 0.55)"}, {"id": "STREET_CALLE1_10", "label": "CALLE1-10", "type": "STREET", "x": 19.59, "y": 0.02, "z": 48.45, "w": 63.1, "d": 2.2, "h": 0.1, "ry": 9, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "STREET_CALLE1_11", "label": "CALLE1-11", "type": "STREET", "x": -15.92, "y": 0.02, "z": 53.31, "w": 10.2, "d": 2.2, "h": 0.1, "ry": 0, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "CURVE_CALLE1_12", "label": "CALLE1-12", "type": "CURVE", "x": 64.09, "y": 0.02, "z": 33.94, "w": 10.3, "d": 0.35, "h": 0.1, "ry": 190.5, "arc": 78.5, "color": "#4a4a4a", "opacity": 1}, {"id": "CURVE_CALLE1_13", "label": "CALLE1-13", "type": "CURVE", "x": 44.15, "y": 0.02, "z": 37.9, "w": 8.45, "d": 0.35, "h": 0.1, "ry": 334.5, "arc": 41, "color": "#4a4a4a", "opacity": 1}, {"id": "STREET_CALLE1_14", "label": "CALLE1-14", "type": "STREET", "x": 50.4, "y": 0.02, "z": 44.73, "w": 6.95, "d": 1.5, "h": 0.1, "ry": 66, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "ZONE_D__ROMANA_VIEJA_", "label": "D (ROMANA VIEJA)", "type": "ZONE", "x": 5.29, "y": 0.5, "z": 42.15, "w": 12.7, "d": 4, "h": 1, "ry": 0, "arc": 90, "color": "rgba(251, 191, 36, 0.55)"}, {"id": "ZONE_D__FARMCIA_", "label": "D (FARMCIA)", "type": "ZONE", "x": 28.35, "y": 0.5, "z": 32.95, "w": 6.33, "d": 2.47, "h": 1, "ry": 90, "arc": 90, "color": "rgba(251, 191, 36, 0.55)"}, {"id": "ZONE_CEDI", "label": "CEDI", "type": "ZONE", "x": 14.34, "y": 1.3, "z": -11.56, "w": 18.5, "d": 4.8, "h": 2.6, "ry": 0, "arc": 90, "color": "#919191", "opacity": 1}, {"id": "ZONE_L", "label": "M", "type": "ZONE", "x": -0.46, "y": 0.5, "z": -22.68, "w": 10.9, "d": 2.3, "h": 1, "ry": 0, "arc": 90, "color": "rgba(251, 191, 36, 0.55)"}, {"id": "ZONE_L_1", "label": "L", "type": "ZONE", "x": -0.39, "y": 0.5, "z": -26.22, "w": 10.48, "d": 1.49, "h": 1, "ry": 360, "arc": 90, "color": "rgba(251, 191, 36, 0.55)"}, {"id": "STREET_CALLE2", "label": "CALLE2", "type": "STREET", "x": -8.64, "y": 0.05, "z": -29.89, "w": 9, "d": 2.1, "h": 0.1, "ry": 90, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "ZONE_S", "label": "S", "type": "ZONE", "x": 0, "y": 0.5, "z": 0, "w": 4, "d": 4, "h": 1, "ry": 0, "arc": 90, "color": "rgba(251, 191, 36, 0.55)"}, {"id": "ZONE_S_1", "label": "S", "type": "ZONE", "x": -12.09, "y": 0.5, "z": -20.1, "w": 3.49, "d": 13.52, "h": 1, "ry": 0, "arc": 90, "color": "rgba(251, 191, 36, 0.55)"}, {"id": "ZONE_Q", "label": "Q", "type": "ZONE", "x": -12.5, "y": 0.5, "z": -2.56, "w": 2.57, "d": 3.17, "h": 1, "ry": 0, "arc": 90, "color": "rgba(251, 191, 36, 0.55)", "text_offset_z": -0.3}, {"id": "ZONE_CV", "label": "CV", "type": "ZONE", "x": -4.76, "y": 0.5, "z": -17.41, "w": 3.35, "d": 6.57, "h": 1, "ry": 0, "arc": 90, "color": "rgba(251, 191, 36, 0.55)"}, {"id": "STREET_CALLE2_1", "label": "CALLE2-1", "type": "STREET", "x": -8.6, "y": 0.02, "z": -8.75, "w": 30.55, "d": 2.2, "h": 0.1, "ry": 90, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "CURVE_CALLE2_2", "label": "CALLE2-2", "type": "CURVE", "x": -11.21, "y": 0.02, "z": 6.45, "w": 2.6, "d": 0.55, "h": 0.1, "ry": 269, "arc": 92, "color": "#4a4a4a", "opacity": 1}, {"id": "STREET_CALLE2_3", "label": "CALLE2-3", "type": "STREET", "x": -35.98, "y": 0.02, "z": 9.07, "w": 49.65, "d": 2.3, "h": 0.1, "ry": 0, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "CURVE_CALLE2_2_1", "label": "CALLE2-2", "type": "CURVE", "x": -60.79, "y": 0.02, "z": 6.47, "w": 2.6, "d": 0.55, "h": 0.1, "ry": 180.5, "arc": 91, "color": "#4a4a4a", "opacity": 1}, {"id": "CURVE_CALLE2_2_2", "label": "CALLE2-2", "type": "CURVE", "x": -60.89, "y": 0.02, "z": 3.74, "w": 2.6, "d": 0.55, "h": 0.1, "ry": 91, "arc": 93.5, "color": "#4a4a4a", "opacity": 1}, {"id": "STREET_CALLE2_4", "label": "CALLE2-4", "type": "STREET", "x": -63.45, "y": 0.02, "z": 5.16, "w": 2.8, "d": 2.2, "h": 0.1, "ry": 90, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "STREET_CALLE2_5", "label": "CALLE2-5", "type": "STREET", "x": -35.34, "y": 0.02, "z": 1.11, "w": 51.3, "d": 2.2, "h": 0.1, "ry": 0, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "ZONE_Z", "label": "Z", "type": "ZONE", "x": -36.68, "y": 0.5, "z": -1.51, "w": 32.15, "d": 2.65, "h": 1, "ry": 0, "arc": 90, "color": "rgba(251, 191, 36, 0.55)", "text_size": 21, "text_offset_x": 0.1, "text_offset_y": -0.05, "text_offset_z": -0.5}, {"id": "ZONE_L_2", "label": "L", "type": "ZONE", "x": -5.06, "y": 0.5, "z": -28.97, "w": 2.11, "d": 3.91, "h": 1, "ry": 0, "arc": 90, "color": "rgba(251, 191, 36, 0.55)"}, {"id": "ZONE_PORTONES_RECEPCION", "label": "PORTONES RECEPCION", "type": "ZONE", "x": 23.43, "y": 0.5, "z": 8.89, "w": 35.75, "d": 4, "h": 1, "ry": 90, "arc": 90, "color": "#625b5b", "text_offset_z": 0.9, "opacity": 1}, {"id": "ZONE_PORTONES_FARMACIA", "label": "PORTONES FARMACIA", "type": "ZONE", "x": 24.31, "y": 0.5, "z": 30.86, "w": 8.2, "d": 2.2, "h": 1, "ry": 90, "arc": 90, "color": "#ac7777", "opacity": 1}, {"id": "ZONE_OFI_DESPACHO", "label": "OFI DESPACHO", "type": "ZONE", "x": -5.85, "y": 0.6, "z": 10.26, "w": 4, "d": 4, "h": 1.2, "ry": 271, "arc": 90, "color": "#4d4bbe", "opacity": 1, "text_offset_y": -0.05, "text_offset_z": 0.1, "text_size": 8, "text_offset_x": -0.5}, {"id": "ZONE_PORTONES_DESPACHO", "label": "PORTONES DESPACHO", "type": "ZONE", "x": -5.29, "y": 0.5, "z": -0.14, "w": 16.65, "d": 4, "h": 1, "ry": 270, "arc": 90, "color": "#7675b8", "text_offset_z": 0.7, "opacity": 1}, {"id": "ZONE_PORTONES_DESPACHO_1", "label": "PORTONES DESPACHO", "type": "ZONE", "x": -19.46, "y": 0.5, "z": 11.45, "w": 22.05, "d": 2.7, "h": 1, "ry": 180, "arc": 90, "color": "#7675b8", "text_offset_z": 0.5, "opacity": 1}, {"id": "ZONE_PORTONES_DESPACHO_2", "label": "PORTONES IMPORTADOS", "type": "ZONE", "x": -37.43, "y": 0.5, "z": 11.49, "w": 14, "d": 2.8, "h": 1, "ry": 180, "arc": 90, "color": "#9aaf74", "text_offset_z": 0.5, "opacity": 1}, {"id": "ZONE_PORTONES_DESPACHO_3", "label": "PORTONES PDC", "type": "ZONE", "x": -53.64, "y": 0.5, "z": 11, "w": 13.5, "d": 1.6, "h": 1, "ry": 180, "arc": 90, "color": "#64a081", "text_offset_z": 0.1, "opacity": 1}, {"id": "ZONE_ENTRADA_CEDI", "label": "ENTRADA CEDI", "type": "ZONE", "x": 16.56, "y": 0.5, "z": -14.39, "w": 3.42, "d": 1.92, "h": 1, "ry": 180, "arc": 90, "color": "#292929", "text_size": 8, "opacity": 1}, {"id": "ZONE_CEDI_EXPANSION", "label": "CEDI EXPANSION", "type": "BOX", "x": -30.16, "y": 2, "z": 40.18, "w": 29.41, "d": 7.21, "h": 4, "ry": 0, "arc": 90, "color": "#919191", "text_size": 23, "opacity": 1}];
+        const defaultShapes = [{"id": "ENTRADA_27", "label": "SALIDA 27", "type": "BOX", "x": 52.13, "y": 0.75, "z": 35.51, "w": 7.53, "d": 1.5, "h": 1.5, "ry": 11.5, "arc": 90, "color": "#808080", "opacity": 1, "text_offset_z": -0.3, "text_size": 15}, {"id": "ENTRADA", "label": "Entrada", "type": "BOX", "x": 10.53, "y": 0.75, "z": -43.36, "w": 9.66, "d": 2.56, "h": 1.5, "ry": 0, "arc": 90, "color": "#000000", "opacity": 1, "text_size": 28, "text_offset_z": -0.7}, {"id": "LUBRICEDI", "label": "Lubricedi", "type": "BOX", "x": 0.9, "y": 1.25, "z": -28.84, "w": 4.5, "d": 3.49, "h": 2.5, "ry": 0, "arc": 90, "color": "rgba(14, 165, 233, 0.45)", "opacity": 1, "text_size": 20, "text_offset_z": -0.7}, {"id": "DEVOLUCIONES", "label": "Devoluciones", "type": "BOX", "x": -9.47, "y": 1.25, "z": -37.93, "w": 12.58, "d": 7.06, "h": 2.5, "ry": 0, "arc": 90, "color": "rgba(249, 115, 22, 0.45)", "opacity": 1, "text_size": 31}, {"id": "CEDI_1", "label": "CEDI", "type": "BOX", "x": 1.14, "y": 2.1, "z": -15.24, "w": 8.39, "d": 11.69, "h": 4.2, "ry": 0, "arc": 90, "color": "#919191", "opacity": 1, "text_size": 36.5, "text_offset_z": -0.9}, {"id": "CEDI_2", "label": "CEDI", "type": "BOX", "x": 9.49, "y": 2, "z": 14.36, "w": 29.05, "d": 47.5, "h": 4, "ry": 0, "arc": 90, "color": "#919191", "text_size": 61.5, "opacity": 1}, {"id": "PDC", "label": "PDC", "type": "BOX", "x": -52.84, "y": 1.5, "z": 19.35, "w": 15.89, "d": 16.27, "h": 3, "ry": 0, "arc": 90, "color": "#5e5e5e", "opacity": 1, "text_size": 58, "text_offset_z": -1.8}, {"id": "OFICINA_TRANSPORTE", "label": "CEDI EXPANSION", "type": "BOX", "x": -24.93, "y": 2, "z": 24.68, "w": 39.83, "d": 26.86, "h": 4, "ry": 0, "arc": 90, "color": "#919191", "text_size": 50, "opacity": 1, "text_offset_z": -0.9}, {"id": "ZONE_K", "label": "K", "type": "BOX", "x": -8.19, "y": 0.5, "z": 44.4, "w": 12.07, "d": 7.53, "h": 1, "ry": 0, "arc": 90, "color": "rgba(14, 165, 233, 0.45)", "text_size": 47, "text_offset_z": -1.2}, {"id": "ZONE_D2", "label": "D", "type": "BOX", "x": 18.02, "y": 0.5, "z": 41.8, "w": 11.78, "d": 3.36, "h": 1, "ry": 0, "arc": 90, "color": "rgba(14, 165, 233, 0.45)", "text_size": 29.5, "text_offset_z": -0.7}, {"id": "ZONE_B", "label": "B", "type": "BOX", "x": 29.99, "y": 0.5, "z": 15.3, "w": 4.15, "d": 18.51, "h": 1, "ry": 0, "arc": 90, "color": "rgba(14, 165, 233, 0.45)", "text_size": 55.5, "text_offset_z": -0.9}, {"id": "ZONE_P", "label": "P", "type": "BOX", "x": 30, "y": 0.5, "z": -0.31, "w": 4.08, "d": 12.46, "h": 1, "ry": 0, "arc": 90, "color": "rgba(14, 165, 233, 0.45)", "text_size": 55}, {"id": "ZONE_G1", "label": "G.1", "type": "BOX", "x": -19.76, "y": 0.4, "z": 6.58, "w": 19.12, "d": 2.72, "h": 0.8, "ry": 0, "arc": 90, "color": "rgba(99, 102, 241, 0.45)", "text_size": 30.5, "text_offset_z": -0.5}, {"id": "ZONE_G2", "label": "G.2", "type": "BOX", "x": -45.44, "y": 0.4, "z": 6.55, "w": 32.15, "d": 2.72, "h": 0.8, "ry": 0, "arc": 90, "color": "rgba(99, 102, 241, 0.45)", "text_size": 35, "text_offset_z": -0.9}, {"id": "ZONE_C1", "label": "C.1", "type": "BOX", "x": -19.77, "y": 0.4, "z": 3.72, "w": 19.12, "d": 2.92, "h": 0.8, "ry": 0, "arc": 90, "color": "rgba(236, 72, 153, 0.45)", "text_size": 30.5, "text_offset_z": -0.7}, {"id": "ZONE_C2", "label": "C.2", "type": "BOX", "x": -45.43, "y": 0.4, "z": 3.75, "w": 32.1, "d": 2.92, "h": 0.8, "ry": 0, "arc": 90, "color": "rgba(236, 72, 153, 0.45)", "text_size": 31.5, "text_offset_z": -0.7}, {"id": "STREET_CALLE", "label": "CALLE", "type": "BOX", "x": -0.34, "y": 0.05, "z": -24.7, "w": 18.72, "d": 1.43, "h": 0.1, "ry": 0, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "STREET_CALLE1", "label": "CALLE1", "type": "BOX", "x": 9.67, "y": 0.05, "z": -31.54, "w": 1.35, "d": 21.29, "h": 0.1, "ry": 0, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "CURVE_CALLE1_1", "label": "CALLE1-1", "type": "CURVE", "x": 14.82, "y": 0.15, "z": -21.13, "w": 5.1, "d": 0.35, "h": 0.3, "ry": 182, "arc": 88.5, "color": "#4a4a4a", "opacity": 1}, {"id": "STREET_CALLE1_2", "label": "CALLE1-2", "type": "STREET", "x": 18.06, "y": 0.02, "z": -15.99, "w": 6.65, "d": 1.25, "h": 0.1, "ry": 0, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "CURVE_CALLE1_3", "label": "CALLE1-3", "type": "CURVE", "x": 21.28, "y": 0.02, "z": -11.1, "w": 4.9, "d": 0.35, "h": 0.1, "ry": 0, "arc": 88.5, "color": "#4a4a4a", "opacity": 1}, {"id": "STREET_CALLE1_4", "label": "CALLE1-4", "type": "STREET", "x": 26.19, "y": 0.02, "z": 12.05, "w": 46.45, "d": 1.5, "h": 0.1, "ry": 90, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "CURVE_CALLE1_5", "label": "CALLE1-5", "type": "CURVE", "x": 22.32, "y": 0.02, "z": 35.35, "w": 3.85, "d": 0.35, "h": 0.1, "ry": 268, "arc": 93.5, "color": "#4a4a4a", "opacity": 1}, {"id": "STREET_CALLE1_6", "label": "CALLE1-6", "type": "STREET", "x": 3.99, "y": 0.02, "z": 39.22, "w": 36.4, "d": 1.3, "h": 0.1, "ry": 0, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "STREET_CALLE1_7", "label": "CALLE1-7", "type": "STREET", "x": 35.96, "y": 0.02, "z": 28.28, "w": 18.05, "d": 2.9, "h": 0.1, "ry": 0, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "CURVE_CALLE1_8", "label": "CALLE1-8", "type": "CURVE", "x": 44.93, "y": 0.02, "z": 35.66, "w": 7.4, "d": 0.7, "h": 0.1, "ry": 7.5, "arc": 83.5, "color": "#4a4a4a", "opacity": 1}, {"id": "ZONE_PATIO_1", "label": "PATIO 1", "type": "ZONE", "x": 50.74, "y": 0.5, "z": 20.93, "w": 22.82, "d": 8.36, "h": 1, "ry": 0, "arc": 90, "color": "rgba(251, 191, 36, 0.55)", "text_size": 47.5, "text_offset_z": -1.2}, {"id": "STREET_CALLE1_9", "label": "CALLE1-9", "type": "STREET", "x": 52.95, "y": 0.02, "z": 27.31, "w": 6, "d": 1.95, "h": 0.1, "ry": 48, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "ZONE_PATIO_2", "label": "PATIO 2", "type": "ZONE", "x": 41.75, "y": 0.5, "z": 39.91, "w": 10.61, "d": 7.64, "h": 1, "ry": 9, "arc": 90, "color": "rgba(251, 191, 36, 0.55)", "text_size": 34.5, "text_offset_z": -0.9}, {"id": "ZONE_PATIO_3", "label": "PATIO 3", "type": "ZONE", "x": -27.88, "y": 0.5, "z": 52.27, "w": 14.44, "d": 8.99, "h": 1, "ry": 0, "arc": 90, "color": "rgba(251, 191, 36, 0.55)", "text_size": 33.5, "text_offset_z": -0.7}, {"id": "STREET_CALLE1_10", "label": "CALLE1-10", "type": "STREET", "x": 19.59, "y": 0.02, "z": 48.45, "w": 63.1, "d": 2.2, "h": 0.1, "ry": 9, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "STREET_CALLE1_11", "label": "CALLE1-11", "type": "STREET", "x": -15.92, "y": 0.02, "z": 53.31, "w": 10.2, "d": 2.2, "h": 0.1, "ry": 0, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "CURVE_CALLE1_12", "label": "CALLE1-12", "type": "CURVE", "x": 64.09, "y": 0.02, "z": 33.94, "w": 10.3, "d": 0.35, "h": 0.1, "ry": 190.5, "arc": 78.5, "color": "#4a4a4a", "opacity": 1}, {"id": "CURVE_CALLE1_13", "label": "CURVE_CALLE1-13", "type": "CURVE", "x": 44.15, "y": 0.02, "z": 37.9, "w": 8.45, "d": 0.35, "h": 0.1, "ry": 334.5, "arc": 41, "color": "#4a4a4a", "opacity": 1}, {"id": "STREET_CALLE1_14", "label": "CALLE1-14", "type": "STREET", "x": 50.4, "y": 0.02, "z": 44.73, "w": 6.95, "d": 1.5, "h": 0.1, "ry": 66, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "ZONE_D__ROMANA_VIEJA_", "label": "D (ROMANA VIEJA)", "type": "ZONE", "x": 5.29, "y": 0.5, "z": 42.15, "w": 12.7, "d": 4, "h": 1, "ry": 0, "arc": 90, "color": "rgba(251, 191, 36, 0.55)", "text_size": 21.5, "text_offset_z": -0.7}, {"id": "ZONE_D__FARMCIA_", "label": "D (FARMCIA)", "type": "ZONE", "x": 28.35, "y": 0.5, "z": 32.95, "w": 6.33, "d": 2.47, "h": 1, "ry": 90, "arc": 90, "color": "rgba(251, 191, 36, 0.55)", "text_size": 16, "text_offset_z": -0.3}, {"id": "ZONE_CEDI", "label": "CEDI", "type": "ZONE", "x": 14.34, "y": 1.3, "z": -11.56, "w": 18.5, "d": 4.8, "h": 2.6, "ry": 0, "arc": 90, "color": "#919191", "opacity": 1, "text_size": 33, "text_offset_z": -1.2}, {"id": "ZONE_L", "label": "M", "type": "ZONE", "x": -0.46, "y": 0.5, "z": -22.68, "w": 10.9, "d": 2.3, "h": 1, "ry": 0, "arc": 90, "color": "rgba(251, 191, 36, 0.55)", "text_size": 27.5, "text_offset_z": -0.7}, {"id": "ZONE_L_1", "label": "L", "type": "ZONE", "x": -0.39, "y": 0.5, "z": -26.22, "w": 10.48, "d": 1.49, "h": 1, "ry": 360, "arc": 90, "color": "rgba(251, 191, 36, 0.55)", "text_size": 24.5, "text_offset_z": -0.5}, {"id": "STREET_CALLE2", "label": "CALLE2", "type": "STREET", "x": -8.64, "y": 0.05, "z": -29.89, "w": 9, "d": 2.1, "h": 0.1, "ry": 90, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "ZONE_S", "label": "S", "type": "ZONE", "x": 0, "y": 0.5, "z": 0, "w": 4, "d": 4, "h": 1, "ry": 0, "arc": 90, "color": "rgba(251, 191, 36, 0.55)"}, {"id": "ZONE_S_1", "label": "S", "type": "ZONE", "x": -12.09, "y": 0.5, "z": -20.1, "w": 3.49, "d": 13.52, "h": 1, "ry": 0, "arc": 90, "color": "rgba(251, 191, 36, 0.55)", "text_size": 43}, {"id": "ZONE_Q", "label": "Q", "type": "ZONE", "x": -12.5, "y": 0.5, "z": -2.56, "w": 2.57, "d": 3.17, "h": 1, "ry": 0, "arc": 90, "color": "rgba(251, 191, 36, 0.55)", "text_offset_z": -0.7, "text_size": 32}, {"id": "ZONE_CV", "label": "CV", "type": "ZONE", "x": -4.76, "y": 0.5, "z": -17.41, "w": 3.35, "d": 6.57, "h": 1, "ry": 0, "arc": 90, "color": "rgba(251, 191, 36, 0.55)", "text_size": 31.5, "text_offset_z": -0.7}, {"id": "STREET_CALLE2_1", "label": "CALLE2-1", "type": "STREET", "x": -8.6, "y": 0.02, "z": -8.75, "w": 30.55, "d": 2.2, "h": 0.1, "ry": 90, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "CURVE_CALLE2_2", "label": "CALLE2-2", "type": "CURVE", "x": -11.21, "y": 0.02, "z": 6.45, "w": 2.6, "d": 0.55, "h": 0.1, "ry": 269, "arc": 92, "color": "#4a4a4a", "opacity": 1}, {"id": "STREET_CALLE2_3", "label": "CALLE2-3", "type": "STREET", "x": -35.98, "y": 0.02, "z": 9.07, "w": 49.65, "d": 2.3, "h": 0.1, "ry": 0, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "CURVE_CALLE2_2_1", "label": "CALLE2-2", "type": "CURVE", "x": -60.79, "y": 0.02, "z": 6.47, "w": 2.6, "d": 0.55, "h": 0.1, "ry": 180.5, "arc": 91, "color": "#4a4a4a", "opacity": 1}, {"id": "CURVE_CALLE2_2_2", "label": "CALLE2-2", "type": "CURVE", "x": -60.89, "y": 0.02, "z": 3.74, "w": 2.6, "d": 0.55, "h": 0.1, "ry": 91, "arc": 93.5, "color": "#4a4a4a", "opacity": 1}, {"id": "STREET_CALLE2_4", "label": "CALLE2-4", "type": "STREET", "x": -63.45, "y": 0.02, "z": 5.16, "w": 2.8, "d": 2.2, "h": 0.1, "ry": 90, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "STREET_CALLE2_5", "label": "CALLE2-5", "type": "STREET", "x": -35.34, "y": 0.02, "z": 1.11, "w": 51.3, "d": 2.2, "h": 0.1, "ry": 0, "arc": 90, "color": "#4a4a4a", "opacity": 1}, {"id": "ZONE_Z", "label": "Z", "type": "ZONE", "x": -36.68, "y": 0.5, "z": -1.51, "w": 32.15, "d": 2.65, "h": 1, "ry": 0, "arc": 90, "color": "rgba(251, 191, 36, 0.55)", "text_size": 36, "text_offset_x": 0.1, "text_offset_y": -0.05, "text_offset_z": -0.9}, {"id": "ZONE_L_2", "label": "L", "type": "ZONE", "x": -5.06, "y": 0.5, "z": -28.97, "w": 2.11, "d": 3.91, "h": 1, "ry": 0, "arc": 90, "color": "rgba(251, 191, 36, 0.55)", "text_size": 33, "text_offset_z": -1.2}, {"id": "ZONE_PORTONES_RECEPCION", "label": "PORTONES RECEPCION", "type": "ZONE", "x": 23.43, "y": 0.5, "z": 8.89, "w": 35.75, "d": 4, "h": 1, "ry": 90, "arc": 90, "color": "#625b5b", "text_offset_z": 0.9, "opacity": 1}, {"id": "ZONE_PORTONES_FARMACIA", "label": "PORTONES FARMACIA", "type": "ZONE", "x": 24.31, "y": 0.5, "z": 30.86, "w": 8.2, "d": 2.2, "h": 1, "ry": 90, "arc": 90, "color": "#ac7777", "opacity": 1}, {"id": "ZONE_OFI_DESPACHO", "label": "OFI DESPACHO", "type": "ZONE", "x": -5.85, "y": 0.6, "z": 10.26, "w": 4, "d": 4, "h": 1.2, "ry": 271, "arc": 90, "color": "#4d4bbe", "opacity": 1, "text_offset_y": -0.05, "text_offset_z": 0.1, "text_size": 8, "text_offset_x": -0.5}, {"id": "ZONE_PORTONES_DESPACHO", "label": "PORTONES DESPACHO", "type": "ZONE", "x": -5.29, "y": 0.5, "z": -0.14, "w": 16.65, "d": 4, "h": 1, "ry": 270, "arc": 90, "color": "#7675b8", "text_offset_z": 0.7, "opacity": 1}, {"id": "ZONE_PORTONES_DESPACHO_1", "label": "PORTONES DESPACHO", "type": "ZONE", "x": -19.46, "y": 0.5, "z": 11.45, "w": 22.05, "d": 2.7, "h": 1, "ry": 180, "arc": 90, "color": "#7675b8", "text_offset_z": 0.5, "opacity": 1}, {"id": "ZONE_PORTONES_DESPACHO_2", "label": "PORTONES IMPORTADOS", "type": "ZONE", "x": -37.43, "y": 0.5, "z": 11.49, "w": 14, "d": 2.8, "h": 1, "ry": 180, "arc": 90, "color": "#9aaf74", "text_offset_z": 0.5, "opacity": 1}, {"id": "ZONE_PORTONES_DESPACHO_3", "label": "PORTONES PDC", "type": "ZONE", "x": -53.64, "y": 0.5, "z": 11, "w": 13.5, "d": 1.6, "h": 1, "ry": 180, "arc": 90, "color": "#64a081", "text_offset_z": 0.1, "opacity": 1}, {"id": "ZONE_ENTRADA_CEDI", "label": "ENTRADA CEDI", "type": "ZONE", "x": 16.56, "y": 0.5, "z": -14.39, "w": 3.42, "d": 1.92, "h": 1, "ry": 180, "arc": 90, "color": "#292929", "text_size": 8, "opacity": 1}, {"id": "ZONE_CEDI_EXPANSION", "label": "CEDI EXPANSION", "type": "BOX", "x": -30.16, "y": 2, "z": 40.18, "w": 29.41, "d": 7.21, "h": 4, "ry": 0, "arc": 90, "color": "#919191", "text_size": 23, "opacity": 1}];
         let shapes = localStorage.getItem(storageKey) ? JSON.parse(localStorage.getItem(storageKey)) : defaultShapes;
 
         // Undo History Mechanism (Ctrl+Z)
@@ -1408,143 +1385,6 @@
             }
         }
 
-        // VIRTUAL JOYSTICK LOGIC FOR SMOOTH 360 DEGREE MOBILE NAVIGATION
-        let joystickActive = false;
-        let joystickTouchId = null;
-        let joystickStartX = 0;
-        let joystickStartY = 0;
-        let joystickDX = 0;
-        let joystickDY = 0;
-        let joystickLoopTimer = null;
-
-        window.addEventListener("DOMContentLoaded", () => {
-            const joystickContainer = document.getElementById("virtualJoystickContainer");
-            const joystickKnob = document.getElementById("virtualJoystickKnob");
-            if (!joystickContainer || !joystickKnob) return;
-
-            joystickContainer.addEventListener("touchstart", (e) => {
-                const touch = e.changedTouches[0];
-                joystickTouchId = touch.identifier;
-                joystickActive = true;
-                
-                const rect = joystickContainer.getBoundingClientRect();
-                joystickStartX = rect.left + rect.width / 2;
-                joystickStartY = rect.top + rect.height / 2;
-                
-                updateJoystickPosition(touch.clientX, touch.clientY);
-                startJoystickLoop();
-                
-                e.preventDefault();
-                e.stopPropagation();
-            }, { passive: false });
-
-            window.addEventListener("touchmove", (e) => {
-                if (!joystickActive) return;
-                
-                let joystickTouch = null;
-                for (let i = 0; i < e.touches.length; i++) {
-                    if (e.touches[i].identifier === joystickTouchId) {
-                        joystickTouch = e.touches[i];
-                        break;
-                    }
-                }
-                
-                if (joystickTouch) {
-                    updateJoystickPosition(joystickTouch.clientX, joystickTouch.clientY);
-                    // Do NOT preventDefault or stopPropagation globally, so A-Frame can handle look-controls!
-                }
-            }, { passive: true });
-
-            window.addEventListener("touchend", (e) => {
-                if (!joystickActive) return;
-                
-                let joystickEnded = false;
-                for (let i = 0; i < e.changedTouches.length; i++) {
-                    if (e.changedTouches[i].identifier === joystickTouchId) {
-                        joystickEnded = true;
-                        break;
-                    }
-                }
-                
-                if (joystickEnded) {
-                    joystickActive = false;
-                    joystickTouchId = null;
-                    joystickDX = 0;
-                    joystickDY = 0;
-                    joystickKnob.style.transform = "translate(0px, 0px)";
-                    stopJoystickLoop();
-                }
-            }, { passive: true });
-
-            function updateJoystickPosition(clientX, clientY) {
-                let dx = clientX - joystickStartX;
-                let dy = clientY - joystickStartY;
-                const maxRadius = 40;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                if (distance > maxRadius) {
-                    dx = (dx / distance) * maxRadius;
-                    dy = (dy / distance) * maxRadius;
-                }
-                
-                joystickKnob.style.transform = `translate(${dx}px, ${dy}px)`;
-                
-                joystickDX = dx / maxRadius;
-                joystickDY = dy / maxRadius;
-            }
-        });
-
-        function startJoystickLoop() {
-            if (joystickLoopTimer) return;
-            const moveSpeedScalar = 0.8;
-            const rig = document.getElementById("cameraRig");
-            const camera = document.getElementById("mainCamera");
-            
-            joystickLoopTimer = setInterval(() => {
-                if (!joystickActive || !rig || !camera) return;
-                
-                let pos = rig.getAttribute("position");
-                
-                // Use Three.js physical world direction for ultimate flexibility and natural steering
-                const dir = new THREE.Vector3();
-                camera.object3D.getWorldDirection(dir);
-                
-                // Project looking direction onto flat ground (XZ plane), negating to correct Three.js backwards gotcha, and normalize
-                const fwd = new THREE.Vector3(-dir.x, 0, -dir.z).normalize();
-                
-                // Calculate perpendicular right vector (right = up x forward)
-                const right = new THREE.Vector3(-fwd.z, 0, fwd.x);
-                
-                // joystickDY < 0 is forward, joystickDY > 0 is backward
-                const forwardMoveX = fwd.x * (-joystickDY) * moveSpeedScalar;
-                const forwardMoveZ = fwd.z * (-joystickDY) * moveSpeedScalar;
-                
-                const rightMoveX = right.x * joystickDX * moveSpeedScalar;
-                const rightMoveZ = right.z * joystickDX * moveSpeedScalar;
-                
-                const deltaX = forwardMoveX + rightMoveX;
-                const deltaZ = forwardMoveZ + rightMoveZ;
-                
-                if (typeof pos === 'string') {
-                    let parts = pos.split(" ").map(parseFloat);
-                    parts[0] += deltaX;
-                    parts[2] += deltaZ;
-                    rig.setAttribute("position", parts.join(" "));
-                } else if (pos && typeof pos === 'object') {
-                    pos.x += deltaX;
-                    pos.z += deltaZ;
-                    rig.setAttribute("position", `${pos.x} ${pos.y} ${pos.z}`);
-                }
-            }, 20);
-        }
-
-        function stopJoystickLoop() {
-            if (joystickLoopTimer) {
-                clearInterval(joystickLoopTimer);
-                joystickLoopTimer = null;
-            }
-        }
-
         let isDraggingMouse = false;
         let lastMouseX = 0;
         let lastMouseY = 0;
@@ -1653,7 +1493,7 @@
                         // Capture initial intersection point on the floor
                         raycaster.ray.intersectPlane(groundPlane3D, initialIntersection);
                         
-                        document.getElementById("mainCamera").setAttribute("look-controls", "pointerLockEnabled: false; magicWindowTrackingEnabled: false; enabled: false");
+                        document.getElementById("mainCamera").setAttribute("look-controls", "enabled: false");
                         hitSomething = true;
                         e.stopPropagation();
                         e.stopImmediatePropagation();
@@ -1683,7 +1523,7 @@
                         document.getElementById("editZoneSelector").value = id;
                         loadZoneToEditor();
                         
-                        document.getElementById("mainCamera").setAttribute("look-controls", "pointerLockEnabled: false; magicWindowTrackingEnabled: false; enabled: false");
+                        document.getElementById("mainCamera").setAttribute("look-controls", "enabled: false");
                         pushState(); // Save state for undo before moving!
                         dragObject = shapes.find(s => s.id === id);
                         activeHandle = "move"; // drag shape position
@@ -1787,7 +1627,7 @@
             if (dragObject) {
                 dragObject = null;
                 activeHandle = null;
-                document.getElementById("mainCamera").setAttribute("look-controls", "pointerLockEnabled: false; magicWindowTrackingEnabled: false; enabled: true");
+                document.getElementById("mainCamera").setAttribute("look-controls", "enabled: true");
                 saveToLocalStorage();
                 e.stopPropagation();
                 e.stopImmediatePropagation();
@@ -1919,31 +1759,6 @@
             rig.setAttribute("position", rigPos.x + " " + rigPos.y + " " + rigPos.z);
             rig.setAttribute("rotation", rigRot.x + " " + rigRot.y + " " + rigRot.z);
             
-            // Toggle virtual joystick visibility based on preset (only front view)
-            const joystickCont = document.getElementById("virtualJoystickContainer");
-            if (joystickCont) {
-                if (preset === 'front') {
-                    joystickCont.classList.remove("hidden");
-                } else {
-                    joystickCont.classList.add("hidden");
-                    if (typeof joystickActive !== 'undefined' && joystickActive) {
-                        joystickActive = false;
-                        joystickDX = 0;
-                        joystickDY = 0;
-                        const knob = document.getElementById("virtualJoystickKnob");
-                        if (knob) knob.style.transform = "translate(0px, 0px)";
-                        stopJoystickLoop();
-                    }
-                }
-            }
-
-            // Disable single-finger rotating in top view to keep the view flat and locked
-            if (preset === 'top') {
-                cam.setAttribute("look-controls", "pointerLockEnabled: false; magicWindowTrackingEnabled: false; enabled: false");
-            } else {
-                cam.setAttribute("look-controls", "pointerLockEnabled: false; magicWindowTrackingEnabled: false; enabled: true");
-            }
-
             // Reset look-controls pitch & yaw internally
             if (cam.components && cam.components['look-controls']) {
                 cam.components['look-controls'].yawObject.rotation.set(0, 0, 0);
@@ -1955,97 +1770,17 @@
                 b.classList.remove("bg-[#0053e2]", "text-white");
                 b.classList.add("hover:bg-slate-800", "text-slate-200");
             });
-            document.querySelectorAll("[onclick^='setCameraView']").forEach(b => {
-                if (b.getAttribute("onclick").includes("'" + preset + "'")) {
-                    b.classList.remove("hover:bg-slate-800", "text-slate-200");
-                    b.classList.add("bg-[#0053e2]", "text-white");
-                }
-            });
+            const btn = Array.from(document.querySelectorAll("[onclick^='setCameraView']"))
+                .find(b => b.getAttribute("onclick").includes("'" + preset + "'"));
+            if (btn) {
+                btn.classList.remove("hover:bg-slate-800", "text-slate-200");
+                btn.classList.add("bg-[#0053e2]", "text-white");
+            }
         }
 
         function goBackTo2D() {
             window.location.href = "mapa_cedi_coyol.html";
         }
-
-        function toggleMobileMode(enable) {
-            const header = document.getElementById("widgetHeader");
-            const dpad = document.getElementById("widgetJoystick");
-            const search = document.getElementById("widgetSearch");
-            const mobilePanel = document.getElementById("mobileCompactPanel");
-            
-            if (enable) {
-                if (header) header.classList.add("hidden");
-                if (dpad) dpad.classList.add("hidden");
-                if (search) search.classList.add("hidden");
-                if (mobilePanel) mobilePanel.classList.remove("hidden");
-            } else {
-                if (header) header.classList.remove("hidden");
-                if (dpad) dpad.classList.remove("hidden");
-                if (search) search.classList.add("hidden"); // keep search hidden by default
-                if (mobilePanel) mobilePanel.classList.add("hidden");
-            }
-        }
-
-        // Auto-detect mobile devices on startup
-        window.addEventListener("DOMContentLoaded", () => {
-            const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || (window.innerWidth < 768);
-            if (isMobile) {
-                setTimeout(() => {
-                    toggleMobileMode(true);
-                    setCameraView('top'); // Default view for first-time mobile entry!
-                }, 500);
-            }
-        });
-
-        // PINCH-TO-ZOOM FOR MOBILE DEVICES
-        let initialPinchDistance = 0;
-        let initialRigY = 25;
-        let isPinching = false;
-
-        window.addEventListener("touchstart", (e) => {
-            if (e.touches.length === 2) {
-                isPinching = true;
-                const t1 = e.touches[0];
-                const t2 = e.touches[1];
-                const dx = t1.clientX - t2.clientX;
-                const dy = t1.clientY - t2.clientY;
-                initialPinchDistance = Math.sqrt(dx * dx + dy * dy);
-                
-                const rig = document.getElementById("cameraRig");
-                if (rig && rig.object3D) {
-                    initialRigY = rig.object3D.position.y;
-                }
-            }
-        }, { passive: true });
-
-        window.addEventListener("touchmove", (e) => {
-            if (isPinching && e.touches.length === 2) {
-                const t1 = e.touches[0];
-                const t2 = e.touches[1];
-                const dx = t1.clientX - t2.clientX;
-                const dy = t1.clientY - t2.clientY;
-                const currentDistance = Math.sqrt(dx * dx + dy * dy);
-                
-                if (initialPinchDistance > 0) {
-                    const ratio = currentDistance / initialPinchDistance;
-                    const rig = document.getElementById("cameraRig");
-                    if (rig && rig.object3D) {
-                        let newY = initialRigY / ratio;
-                        newY = Math.max(3, Math.min(95, newY));
-                        
-                        rig.object3D.position.y = newY;
-                        rig.setAttribute("position", `${rig.object3D.position.x} ${newY} ${rig.object3D.position.z}`);
-                    }
-                }
-            }
-        }, { passive: true });
-
-        window.addEventListener("touchend", (e) => {
-            if (e.touches.length < 2) {
-                isPinching = false;
-                initialPinchDistance = 0;
-            }
-        }, { passive: true });
     </script>
 </body>
 </html>
