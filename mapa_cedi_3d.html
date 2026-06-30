@@ -449,6 +449,11 @@
         </div>
     </div>
 
+    <!-- VIRTUAL JOYSTICK FOR MOBILE NAVIGATION IN FRONT VIEW -->
+    <div id="virtualJoystickContainer" class="floating-widget hidden" style="position: absolute; bottom: 30px; left: 30px; width: 100px; height: 100px; background: rgba(15, 23, 42, 0.6); border: 2px solid rgba(255, 194, 32, 0.4); border-radius: 50%; touch-action: none; z-index: 99999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div id="virtualJoystickKnob" style="width: 40px; height: 40px; background: #ffc220; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: transform 0.05s ease; touch-action: none;"></div>
+    </div>
+
     <!-- PANEL 5: ZONE DETAILS & LIST -->
     <div id="zone3DListCard" class="floating-widget bg-slate-950/95 backdrop-blur-md border border-slate-800 w-[320px] h-[220px] hidden" style="left: 380px; bottom: 20px;">
         <div class="drag-handle rounded-t-2xl">
@@ -1385,6 +1390,102 @@
             }
         }
 
+        // VIRTUAL JOYSTICK LOGIC FOR SMOOTH 360 DEGREE MOBILE NAVIGATION
+        let joystickActive = false;
+        let joystickStartX = 0;
+        let joystickStartY = 0;
+        let joystickDX = 0;
+        let joystickDY = 0;
+        let joystickLoopTimer = null;
+
+        window.addEventListener("DOMContentLoaded", () => {
+            const joystickContainer = document.getElementById("virtualJoystickContainer");
+            const joystickKnob = document.getElementById("virtualJoystickKnob");
+            if (!joystickContainer || !joystickKnob) return;
+
+            joystickContainer.addEventListener("touchstart", (e) => {
+                joystickActive = true;
+                const touch = e.touches[0];
+                const rect = joystickContainer.getBoundingClientRect();
+                joystickStartX = rect.left + rect.width / 2;
+                joystickStartY = rect.top + rect.height / 2;
+                
+                updateJoystickPosition(touch.clientX, touch.clientY);
+                startJoystickLoop();
+                e.preventDefault();
+                e.stopPropagation();
+            }, { passive: false });
+
+            window.addEventListener("touchmove", (e) => {
+                if (!joystickActive) return;
+                const touch = e.touches[0];
+                updateJoystickPosition(touch.clientX, touch.clientY);
+                e.preventDefault();
+                e.stopPropagation();
+            }, { passive: false });
+
+            window.addEventListener("touchend", (e) => {
+                if (!joystickActive) return;
+                joystickActive = false;
+                joystickDX = 0;
+                joystickDY = 0;
+                joystickKnob.style.transform = "translate(0px, 0px)";
+                stopJoystickLoop();
+                e.preventDefault();
+                e.stopPropagation();
+            }, { passive: false });
+
+            function updateJoystickPosition(clientX, clientY) {
+                let dx = clientX - joystickStartX;
+                let dy = clientY - joystickStartY;
+                const maxRadius = 40;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance > maxRadius) {
+                    dx = (dx / distance) * maxRadius;
+                    dy = (dy / distance) * maxRadius;
+                }
+                
+                joystickKnob.style.transform = `translate(${dx}px, ${dy}px)`;
+                
+                joystickDX = dx / maxRadius;
+                joystickDY = dy / maxRadius;
+            }
+        });
+
+        function startJoystickLoop() {
+            if (joystickLoopTimer) return;
+            const moveSpeedScalar = 0.3;
+            const rig = document.getElementById("cameraRig");
+            const camera = document.getElementById("mainCamera");
+            
+            joystickLoopTimer = setInterval(() => {
+                if (!joystickActive) return;
+                
+                let pos = rig.getAttribute("position");
+                let rot = camera.getAttribute("rotation") || {x: 0, y: 0, z: 0};
+                let yaw = (rot.y || 0) * Math.PI / 180;
+                
+                const fwdX = -Math.sin(yaw) * (-joystickDY) * moveSpeedScalar;
+                const fwdZ = -Math.cos(yaw) * (-joystickDY) * moveSpeedScalar;
+                
+                const sideX = Math.cos(yaw) * joystickDX * moveSpeedScalar;
+                const sideZ = -Math.sin(yaw) * joystickDX * moveSpeedScalar;
+                
+                pos.x += fwdX + sideX;
+                pos.z += fwdZ + sideZ;
+                
+                rig.setAttribute("position", pos);
+            }, 20);
+        }
+
+        function stopJoystickLoop() {
+            if (joystickLoopTimer) {
+                clearInterval(joystickLoopTimer);
+                joystickLoopTimer = null;
+            }
+        }
+
         let isDraggingMouse = false;
         let lastMouseX = 0;
         let lastMouseY = 0;
@@ -1759,6 +1860,24 @@
             rig.setAttribute("position", rigPos.x + " " + rigPos.y + " " + rigPos.z);
             rig.setAttribute("rotation", rigRot.x + " " + rigRot.y + " " + rigRot.z);
             
+            // Toggle virtual joystick visibility based on preset (only front view)
+            const joystickCont = document.getElementById("virtualJoystickContainer");
+            if (joystickCont) {
+                if (preset === 'front') {
+                    joystickCont.classList.remove("hidden");
+                } else {
+                    joystickCont.classList.add("hidden");
+                    if (typeof joystickActive !== 'undefined' && joystickActive) {
+                        joystickActive = false;
+                        joystickDX = 0;
+                        joystickDY = 0;
+                        const knob = document.getElementById("virtualJoystickKnob");
+                        if (knob) knob.style.transform = "translate(0px, 0px)";
+                        stopJoystickLoop();
+                    }
+                }
+            }
+
             // Reset look-controls pitch & yaw internally
             if (cam.components && cam.components['look-controls']) {
                 cam.components['look-controls'].yawObject.rotation.set(0, 0, 0);
