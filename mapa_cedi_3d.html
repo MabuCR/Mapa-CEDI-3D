@@ -1972,15 +1972,8 @@
                 initialPinchDistance = Math.sqrt(dx * dx + dy * dy);
                 
                 const rig = document.getElementById("cameraRig");
-                if (rig) {
-                    let pos = rig.getAttribute("position");
-                    if (pos && typeof pos === 'object') {
-                        initialRigY = pos.y;
-                    } else if (typeof pos === 'string') {
-                        initialRigY = parseFloat(pos.split(" ")[1]) || 25;
-                    } else {
-                        initialRigY = 25;
-                    }
+                if (rig && rig.object3D) {
+                    initialRigY = rig.object3D.position.y;
                 }
             }
         }, { passive: true });
@@ -1996,21 +1989,12 @@
                 if (initialPinchDistance > 0) {
                     const ratio = currentDistance / initialPinchDistance;
                     const rig = document.getElementById("cameraRig");
-                    if (rig) {
-                        let posStr = rig.getAttribute("position");
-                        let parts = [];
-                        if (typeof posStr === 'string') {
-                            parts = posStr.split(" ").map(parseFloat);
-                        } else if (posStr && typeof posStr === 'object') {
-                            parts = [posStr.x, posStr.y, posStr.z];
-                        } else {
-                            parts = [0, 25, 40];
-                        }
-                        
+                    if (rig && rig.object3D) {
                         let newY = initialRigY / ratio;
-                        parts[1] = Math.max(3, Math.min(95, newY));
+                        newY = Math.max(3, Math.min(95, newY));
                         
-                        rig.setAttribute("position", parts.join(" "));
+                        rig.object3D.position.y = newY;
+                        rig.setAttribute("position", `${rig.object3D.position.x} ${newY} ${rig.object3D.position.z}`);
                     }
                 }
             }
