@@ -103,7 +103,6 @@
                 <div class="flex gap-1 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
                     <button onclick="setCameraView('top')" class="hover:bg-slate-800 text-slate-200 flex-1 py-1 rounded text-[9px] font-bold transition">Aerea (Arriba)</button>
                     <button onclick="setCameraView('front')" class="hover:bg-slate-800 text-slate-200 flex-1 py-1 rounded text-[9px] font-bold transition">Frente</button>
-                    <button onclick="setCameraView('side')" class="hover:bg-slate-800 text-slate-200 flex-1 py-1 rounded text-[9px] font-bold transition">Costado</button>
                     <button onclick="setCameraView('iso')" class="bg-[#0053e2] text-white flex-1 py-1 rounded text-[9px] font-bold transition shadow">Inclinada (3D)</button>
                 </div>
             </div>
@@ -146,7 +145,6 @@
         <div class="flex items-center gap-1.5 flex-wrap">
             <button onclick="setCameraView('iso')" class="bg-[#0053e2] text-white hover:bg-slate-800 font-bold px-3 py-1.5 rounded-xl text-xs transition">Iso</button>
             <button onclick="setCameraView('front')" class="hover:bg-slate-800 text-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs transition">Frente</button>
-            <button onclick="setCameraView('side')" class="hover:bg-slate-800 text-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs transition">Lado</button>
             <button onclick="setCameraView('top')" class="hover:bg-slate-800 text-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs transition">Top</button>
             
             <div class="h-6 w-[1px] bg-slate-800 mx-1"></div>
@@ -1503,22 +1501,40 @@
             const camera = document.getElementById("mainCamera");
             
             joystickLoopTimer = setInterval(() => {
-                if (!joystickActive) return;
+                if (!joystickActive || !rig || !camera) return;
                 
                 let pos = rig.getAttribute("position");
-                let rot = camera.getAttribute("rotation") || {x: 0, y: 0, z: 0};
-                let yaw = (rot.y || 0) * Math.PI / 180;
                 
-                const fwdX = -Math.sin(yaw) * (-joystickDY) * moveSpeedScalar;
-                const fwdZ = -Math.cos(yaw) * (-joystickDY) * moveSpeedScalar;
+                // Use Three.js physical world direction for ultimate flexibility and natural steering
+                const dir = new THREE.Vector3();
+                camera.object3D.getWorldDirection(dir);
                 
-                const sideX = Math.cos(yaw) * joystickDX * moveSpeedScalar;
-                const sideZ = -Math.sin(yaw) * joystickDX * moveSpeedScalar;
+                // Project looking direction onto flat ground (XZ plane) and normalize
+                const fwd = new THREE.Vector3(dir.x, 0, dir.z).normalize();
                 
-                pos.x += fwdX + sideX;
-                pos.z += fwdZ + sideZ;
+                // Calculate perpendicular right vector (right = up x forward)
+                const right = new THREE.Vector3(-fwd.z, 0, fwd.x);
                 
-                rig.setAttribute("position", pos);
+                // joystickDY < 0 is forward, joystickDY > 0 is backward
+                const forwardMoveX = fwd.x * (-joystickDY) * moveSpeedScalar;
+                const forwardMoveZ = fwd.z * (-joystickDY) * moveSpeedScalar;
+                
+                const rightMoveX = right.x * joystickDX * moveSpeedScalar;
+                const rightMoveZ = right.z * joystickDX * moveSpeedScalar;
+                
+                const deltaX = forwardMoveX + rightMoveX;
+                const deltaZ = forwardMoveZ + rightMoveZ;
+                
+                if (typeof pos === 'string') {
+                    let parts = pos.split(" ").map(parseFloat);
+                    parts[0] += deltaX;
+                    parts[2] += deltaZ;
+                    rig.setAttribute("position", parts.join(" "));
+                } else if (pos && typeof pos === 'object') {
+                    pos.x += deltaX;
+                    pos.z += deltaZ;
+                    rig.setAttribute("position", `${pos.x} ${pos.y} ${pos.z}`);
+                }
             }, 20);
         }
 
