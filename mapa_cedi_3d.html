@@ -1509,8 +1509,8 @@
                 const dir = new THREE.Vector3();
                 camera.object3D.getWorldDirection(dir);
                 
-                // Project looking direction onto flat ground (XZ plane) and normalize
-                const fwd = new THREE.Vector3(dir.x, 0, dir.z).normalize();
+                // Project looking direction onto flat ground (XZ plane), negating to correct Three.js backwards gotcha, and normalize
+                const fwd = new THREE.Vector3(-dir.x, 0, -dir.z).normalize();
                 
                 // Calculate perpendicular right vector (right = up x forward)
                 const right = new THREE.Vector3(-fwd.z, 0, fwd.x);
