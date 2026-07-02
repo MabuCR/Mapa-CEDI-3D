@@ -472,6 +472,22 @@
         <div id="virtualJoystickKnob" style="width: 40px; height: 40px; background: #ffc220; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: transform 0.05s ease; touch-action: none;"></div>
     </div>
 
+    <!-- COMPASS WIDGET -->
+    <div id="compassWidget" onclick="activateCompass()" style="position:absolute;bottom:30px;right:30px;width:82px;height:82px;background:rgba(15,23,42,0.75);border:2px solid rgba(255,194,32,0.5);border-radius:50%;z-index:99999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);cursor:pointer;">
+        <div id="compassRose" style="position:relative;width:74px;height:74px;">
+            <span style="position:absolute;top:2px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:900;color:#ffc220;font-family:monospace;line-height:1;">N</span>
+            <span style="position:absolute;bottom:1px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:700;color:#64748b;font-family:monospace;line-height:1;">S</span>
+            <span style="position:absolute;right:1px;top:50%;transform:translateY(-50%);font-size:9px;font-weight:700;color:#64748b;font-family:monospace;">E</span>
+            <span style="position:absolute;left:1px;top:50%;transform:translateY(-50%);font-size:9px;font-weight:700;color:#64748b;font-family:monospace;">O</span>
+            <div id="compassNeedle" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(0deg);width:5px;height:62px;margin-left:-2.5px;margin-top:-31px;">
+                <div style="width:5px;height:31px;background:#ef4444;border-radius:3px 3px 0 0;"></div>
+                <div style="width:5px;height:31px;background:#e2e8f0;border-radius:0 0 3px 3px;"></div>
+            </div>
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:9px;height:9px;background:#ffc220;border-radius:50%;z-index:3;"></div>
+            <div id="compassOverlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,0.65);border-radius:50%;font-size:7.5px;color:#94a3b8;text-align:center;font-family:monospace;line-height:1.3;pointer-events:none;">Toca<br/>activar</div>
+        </div>
+    </div>
+
     <!-- PANEL 5: ZONE DETAILS & LIST -->
     <div id="zone3DListCard" class="floating-widget bg-slate-950/95 backdrop-blur-md border border-slate-800 w-[320px] h-[220px] hidden" style="left: 380px; bottom: 20px;">
         <div class="drag-handle rounded-t-2xl">
@@ -1538,6 +1554,57 @@
                 joystickLoopTimer = null;
             }
         }
+
+        // ===== BRUJULA / COMPASS =====
+        let compassActive = false;
+
+        function activateCompass() {
+            if (compassActive) return;
+            if (typeof DeviceOrientationEvent !== 'undefined' &&
+                typeof DeviceOrientationEvent.requestPermission === 'function') {
+                // iOS 13+ requiere permiso explícito
+                DeviceOrientationEvent.requestPermission()
+                    .then(state => {
+                        if (state === 'granted') startCompass();
+                        else {
+                            const ol = document.getElementById('compassOverlay');
+                            if (ol) ol.textContent = 'Permiso denegado';
+                        }
+                    })
+                    .catch(err => console.warn('Compass permission error:', err));
+            } else {
+                // Android y otros — no requieren permiso
+                startCompass();
+            }
+        }
+
+        function startCompass() {
+            compassActive = true;
+            const overlay = document.getElementById('compassOverlay');
+            if (overlay) overlay.style.display = 'none';
+
+            // Preferir evento absoluto (Android) sobre relativo
+            const evName = ('ondeviceorientationabsolute' in window)
+                ? 'deviceorientationabsolute'
+                : 'deviceorientation';
+
+            window.addEventListener(evName, (e) => {
+                let heading = null;
+                if (typeof e.webkitCompassHeading === 'number') {
+                    // iOS — ya viene calibrado hacia el norte
+                    heading = e.webkitCompassHeading;
+                } else if (e.alpha !== null) {
+                    // Android absolute: 0=Norte, aumenta hacia el Este
+                    heading = e.absolute ? (360 - e.alpha) % 360 : (360 - e.alpha) % 360;
+                }
+                if (heading !== null) {
+                    const needle = document.getElementById('compassNeedle');
+                    if (needle) needle.style.transform =
+                        `translate(-50%, -50%) rotate(${-heading}deg)`;
+                }
+            }, true);
+        }
+        // ===== FIN BRUJULA =====
 
         let isDraggingMouse = false;
         let lastMouseX = 0;
