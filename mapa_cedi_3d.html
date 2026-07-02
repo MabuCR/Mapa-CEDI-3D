@@ -506,13 +506,16 @@
     </div>
 
     <!-- MODAL FOR SAVING/EXPORTING GEOMETRY -->
+    <!-- Toast de confirmacion de copia -->
+    <div id="copyToast" style="position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#16a34a;color:white;padding:10px 22px;border-radius:99px;font-size:13px;font-weight:700;z-index:99999;opacity:0;transition:all 0.3s ease;pointer-events:none;"> ¡JSON copiado!</div>
+
     <div id="exportModal" class="fixed inset-0 bg-black/85 flex items-center justify-center p-4 z-[500] hidden">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-lg w-full space-y-4">
-            <h3 class="text-base font-bold text-[#ffc220] uppercase">¡Código de Zonas Guardado!</h3>
-            <p class="text-xs text-slate-300">Copia todo este bloque de código y pégamelo en el chat de Thor para consolidar tu nuevo mapa de Coyol permanentemente en el servidor.</p>
-            <textarea id="exportTextarea" class="w-full h-48 bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-[10px] text-emerald-400 focus:outline-none focus:border-[#ffc220]" readonly onclick="this.select()"></textarea>
+            <h3 class="text-base font-bold text-[#ffc220] uppercase"> Exportar JSON para Thor</h3>
+            <p class="text-xs text-slate-300">Tocá <strong>Copiar JSON</strong>, luego pegalo en el chat de Thor. Él hace el rebuild y sube al servidor automáticamente.</p>
+            <textarea id="exportTextarea" class="w-full h-40 bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-[10px] text-emerald-400 focus:outline-none focus:border-[#ffc220]" readonly onclick="this.select(); this.setSelectionRange(0, 99999);"></textarea>
             <div class="flex gap-2">
-                <button onclick="navigator.clipboard.writeText(document.getElementById('exportTextarea').value); alert('¡Código copiado al portapapeles!');" class="flex-1 bg-[#0053e2] hover:bg-[#003ebb] font-bold text-xs py-2 rounded-xl">Copiar Código</button>
+                <button onclick="copyExportJson()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 font-black text-xs py-3 rounded-xl uppercase tracking-wider shadow-lg"> Copiar JSON</button>
                 <button onclick="document.getElementById('exportModal').classList.add('hidden')" class="bg-slate-800 hover:bg-slate-700 font-bold text-xs px-4 py-2 rounded-xl">Cerrar</button>
             </div>
         </div>
@@ -1376,9 +1379,35 @@
         }
 
         function exportLayout() {
-            const code = JSON.stringify(shapes, null, 4);
+            const code = JSON.stringify(shapes, null, 2);
             document.getElementById("exportTextarea").value = code;
             document.getElementById("exportModal").classList.remove("hidden");
+        }
+
+        function copyExportJson() {
+            const ta = document.getElementById('exportTextarea');
+            ta.select();
+            ta.setSelectionRange(0, 99999);
+            const text = ta.value;
+            const showToast = () => {
+                const t = document.getElementById('copyToast');
+                t.style.opacity = '1';
+                t.style.transform = 'translateX(-50%) translateY(0)';
+                setTimeout(() => {
+                    t.style.opacity = '0';
+                    t.style.transform = 'translateX(-50%) translateY(20px)';
+                }, 2500);
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(showToast).catch(() => {
+                    // Fallback para cuando clipboard falla
+                    try { document.execCommand('copy'); showToast(); }
+                    catch(e) { alert('Copia manual: selecciona el texto de arriba y copia (Ctrl+C / Cmd+C)'); }
+                });
+            } else {
+                try { document.execCommand('copy'); showToast(); }
+                catch(e) { alert('Copia manual: selecciona el texto de arriba y copia (Ctrl+C / Cmd+C)'); }
+            }
         }
 
         // SMOOTH MOVEMENT MOTOR FOR NAV BUTTONS & MOUSE DRAGGING TO PAN
